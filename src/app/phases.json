@@ -1,0 +1,16 @@
+{
+  "phases": [
+    "untap",
+    "upkeep",
+    "drawStep",
+    "firstMainPhase",
+    "beginningOfCombat",
+    "declareAttackers",
+    "declareBlockers",
+    "damageStep",
+    "postDamageCombatStep",
+    "postCombatMainPhase",
+    "endStep",
+    "cleanup"
+  ]
+}

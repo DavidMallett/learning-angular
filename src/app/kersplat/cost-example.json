@@ -1,0 +1,7 @@
+{
+  'tap': true,
+  'manaCost': '3UU',
+  'discardCost': 1,
+  'lifeCost': 2,
+  'additionalCosts': []
+}

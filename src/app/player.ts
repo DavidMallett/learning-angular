@@ -21,6 +21,7 @@ export class Player {
   public startingLife: number;
   public currentLife: number;
   public isActivePlayer?: boolean;
+  public manaPool: Array<string>;
 
   public constructor(deck: Deck, bf: Battlefield) {
     this.startingLife = 20;
@@ -33,6 +34,7 @@ export class Player {
     this.owns = [];
     this.controlsLegends = [];
     this.deck.shuffle();
+    this.manaPool = [];
   }
 
   public drawCard(): void {
@@ -142,13 +144,24 @@ export class Player {
       this.owns.push(creature);
       this.controls.push(creature);
       this.bf.register(creature);
+      if (creature.supertype !== null && creature.supertype === 'legendary') {
+        this.controlsLegends.push(creature);
+      }
     }
   }
 
   public castArtifact(card: Card): void {
     if (this.bf.phase !== 'firstMainPhase' &&
       this.bf.phase !== 'postCombatMainPhase' &&
-      )
+      card.keywords.indexOf('flash') < 0) {
+        const artifact: Artifact = new Artifact(card);
+        this.owns.push(artifact);
+        this.controls.push(artifact);
+        this.bf.register(artifact);
+        if (artifact.supertype !== null && artifact.supertype === 'legendary') {
+          this.controlsLegends.push(artifact);
+        }
+      }
   }
 
   public castInstant(card: Card): void {}

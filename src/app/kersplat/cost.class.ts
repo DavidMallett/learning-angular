@@ -8,6 +8,7 @@ export class Cost {
   public lifeCost?: number;
   public additionalCosts: Array<any>;
 
+  // Players will draw from their own resources to create a Cost
   public constructor(costs: Cost) {
     this.tap = costs.tap;
     this.manaCost = costs.manaCost || '0';

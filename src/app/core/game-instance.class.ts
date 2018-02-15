@@ -7,6 +7,7 @@ const _ = require('lodash');
 const uuidv4 = require('uuid/v4');
 
 export class GameInstance {
+  public static currentGameInstanceUuid: string;
   public uuid: string;
   public players: Player[];
   public format: string;
@@ -20,6 +21,11 @@ export class GameInstance {
     this.objects = [];
     this.players = players;
     this.battlefield = new Battlefield(this.uuid);
+    GameInstance.currentGameInstanceUuid = this.uuid;
+  }
+
+  public theBattlefield(): Battlefield {
+    return this.battlefield;
   }
 
   public addObject(object: Permanent): void {

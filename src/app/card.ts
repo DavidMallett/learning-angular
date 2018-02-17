@@ -12,6 +12,40 @@ export class Card implements CardInterface {
   public types: Array<string>;
   public type: string;
   public cmc: number;
+  // mtgsdk
+  public names?: Array<string>; // used for double-faced cards, flip cards, etc
+  public manaCost?: string; // should be able to interpret both {U}{B} and 3UU
+  public colors?: Array<string>;
+  public colorIdentity?: Array<string>;
+  public supertypes?: Array<string>;
+  public subtypes?: Array<string>;
+  public rarity?: string;
+  public text?: string;
+  public flavor?: string;
+  public artist?: string;
+  public number?: string;
+  public power?: number; // MTGJSON defines this as a string because of Tarmogoyf
+  public toughness?: number; // ^^
+  public loyalty?: number;
+  public multiverseId?: number; // is this a number?
+  public variations?: Array<number>;
+  public imageName?: string;
+  public watermark?: string;
+  public border?: 'black' | 'white' | 'silver';
+  public timeshifted?: boolean;
+  public hand?: string; // vanguard modifier
+  public life?: string; // vanguard modifier
+  public reserved?: boolean; // reserved list status
+  public releaseDate?: string;
+  public starter?: boolean;
+  public mciNumber?: string;
+  // not in mtgsdk
+  public owner?: Player;
+  public uuid?: string;
+  public hasStateBasedEffect?: boolean;
+  public hasEtbEffect?: boolean;
+  public supertype?: string; // concat the supertypes array
+  public subtype?: string; // concatenation of subtypes array
   public keywords?: Array<string>;
 
   public constructor(name: string) {

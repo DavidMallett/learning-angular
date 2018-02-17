@@ -1,4 +1,5 @@
 import { CardInterface } from './card.interface';
+import { Card } from '../card';
 
 export interface DeckInterface {
   library: Array<Card>;

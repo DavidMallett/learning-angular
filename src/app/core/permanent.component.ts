@@ -18,6 +18,11 @@ export class Permanent {
   public controller: Player;
   public keywords: Array<string>;
   // optional
+  public types?: Array<string>;
+  public superTypes?: Array<string>;
+  public subtypes?: Array<string>;
+  public rarity?: string;
+  public text?: string;
   public power?: number;
   public toughness?: number;
   public subtype?: string;
@@ -37,10 +42,10 @@ export class Permanent {
     this.name = card.name;
     this.cmc = card.cmc;
     this.keywords = card.keywords;
-    if (card.subtype !== null) {
+    if (card.subtype) {
       this.subtype = card.subtype;
     }
-    if (card.supertype !== null) {
+    if (card.supertype) {
       this.supertype = card.supertype;
     }
     if (card.colors !== null && card.colors.length > 0) {
@@ -50,6 +55,7 @@ export class Permanent {
     this.hasEtbEffect = (card.hasEtbEffect ? true : false);
     this.zone = 'battlefield';
   }
+
   public die(): void {
   // to 'die' is to be put into the graveyard from the battlefield
     if (this.zone === 'battlefield') {
@@ -94,15 +100,13 @@ export class Creature extends Permanent {
 
   public static convert(perm: Permanent): Creature {
     const theCreatureCard: Card = {
-      'type': 'creature',
+      'types': perm.types,
+      'type': _.concat(perm.types, ' '),
       'name': perm.name,
       'cmc': perm.cmc,
       'owner': perm.owner,
-      'controller': perm.controller,
-      'zone': perm.zone,
       'power': perm.power,
       'toughness': perm.toughness,
-      'isArtifactCreature': perm.isArtifactCreature,
       'subtype': perm.subtype
     };
     return new Creature(theCreatureCard);

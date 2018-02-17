@@ -27,6 +27,10 @@ export class Hand {
     throw new Error('Unable to remove card. Maybe it wasnt in hand?');
   }
 
+  public toString(): string {
+    
+  }
+
   public view(): void {
     let resp = 'Cards in hand:\n';
     for (let i = 0; i < this.cardsInHand.length; i++) {

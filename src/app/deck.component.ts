@@ -1,48 +1,47 @@
 import { Card } from './card';
+import { DeckInterface } from './models/deck.interface'
+const _ = require('lodash');
 
-export class Deck {
+export class Deck implements DeckInterface {
 
-    constructor(
-        private library: Array<Card>,
-        private name: string,
-        private format: string, // enum: 'standard' || 'modern' || 'edh' etc
-        private isShuffled: boolean,
-        private cardsLeft: number
-    ) {
-        this.library = library;
-        this.name = name;
-        this.format = format;
-        this.isShuffled = false;
-        this.cardsLeft = this.library.length;
-    }
+  public library: Array<Card>;
+  public name: string;
+  public format: string;
+  public cardsLeft: number;
+  public isShuffled: boolean;
 
-    public shuffle(): Array<Card> {
-        const newLibrary = new Array<Card>();
-        let m = this.library.length, t, i;
-        while (m) {
-            i = Math.floor(Math.random() * m--);
-            t = this.library[m];
-            newLibrary.push(this.library[i]);
-        }
-        return this.library = newLibrary;
-    }
+  constructor(lib: Array<Card>, name: string) {
+      this.library = lib;
+      this.name = name;
+      this.isShuffled = false;
+      this.cardsLeft = lib.length;
+  }
 
-    public draw(): Card {
-      const cardToReturn = this.library.pop();
-      //
-      // Additional logic here if necessary
-      //
-      return cardToReturn;
-    }
+  public shuffle(): void {
+    this.library = _.shuffle(this.library);
+    this.isShuffled = true;
+  }
 
-    public validateForStandard(): void {
-      for (let i = 0; i < this.library.length; i++) {
-        const theCard = this.library[i];
-        if (!(theCard.legality.indexOf('standard') > -1)) {
-          throw new Error('Deck is not Standard legal');
-        }
+  public tutor(cardName: string): Card {
+    
+  }
+
+  public draw(): Card {
+    const cardToReturn = this.library.pop();
+    //
+    // Additional logic here if necessary
+    //
+    return cardToReturn;
+  }
+
+  public validateForStandard(): void {
+    for (let i = 0; i < this.library.length; i++) {
+      const theCard = this.library[i];
+      if (!(theCard.legality.indexOf('standard') > -1)) {
+        throw new Error('Deck is not Standard legal');
       }
     }
+  }
 
 }
 

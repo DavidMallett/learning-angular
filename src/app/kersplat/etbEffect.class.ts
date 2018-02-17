@@ -16,8 +16,10 @@ export class EtbEffect implements Trigger {
     this.actions.push(action);
   }
 
+  // TODO: probably rewrite
+
   public resolve(): void {
-    const game = GameInstance.prototype.getGameInstance();
+    // const game = GameInstance.prototype.getGameInstance();
     const obj = {
       'originator': this.originator,
       'action': {
@@ -25,7 +27,7 @@ export class EtbEffect implements Trigger {
         'effect': this.effect
       },
     };
-    game.applyEffect(obj);
+    // game.applyEffect(obj);
   }
 
 }

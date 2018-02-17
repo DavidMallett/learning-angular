@@ -1,4 +1,5 @@
 import { GameInstance } from './game-instance.class';
+import { AbilityResolver } from '../kersplat/ability-resolver.class';
 const _ = require('lodash');
 
 export class TheStack {
@@ -14,7 +15,9 @@ export class TheStack {
     switch (thingToResolve.type) {
       case 'ActivatedAbility':
         AbilityResolver.resolve(thingToResolve);
-
+        break;
+      default:
+        console.log('nothing to resolve or cannot recognize type of thing you are trying to resolve');
     }
   }
 

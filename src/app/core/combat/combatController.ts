@@ -33,7 +33,14 @@ export class CombatController {
   public constructor() {
     this.attackers = [];
     this.blockers = [];
-    this.attackingPlayer = 
+  }
+
+  public setAttackingPlayer(p: Player): void {
+    this.attackingPlayer = p;
+  }
+
+  public setDefendingPlayer(p: Player): void {
+    this.defendingPlayer = p;
   }
 
   public declareAttackers(attackers: Array<Creature>): void {
@@ -64,10 +71,10 @@ export class CombatController {
   }
 
   public assignDamage(): void {
-    for (let i = 0; i < this.attackers.length; i++) {
-      if (this.attackers[i].blockedBy.length === 0) {
-        
-      }
-    }
+    // for (let i = 0; i < this.attackers.length; i++) {
+    //   if (this.attackers[i].blockedBy.length === 0) {
+    // TODO: rewrite using _#each and then check state based effects after damage
+    //   }
+    // }
   }
 }

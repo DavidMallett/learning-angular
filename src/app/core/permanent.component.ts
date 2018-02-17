@@ -1,7 +1,10 @@
 import { Card } from '../card';
+import { CardInterface } from '../models/card.interface';
 import { Player } from '../player';
+import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import * as uuid from 'uuid';
 
+const _ = require('lodash');
 const uuidv4 = require('uuid/v4');
 
 export class Permanent {
@@ -9,7 +12,7 @@ export class Permanent {
   public uuid: string;
   public type: string;
   public name: string;
-  public convertedManaCost: number;
+  public cmc: number;
   public zone: string;
   public owner: Player;
   public controller: Player;
@@ -24,12 +27,15 @@ export class Permanent {
   public hasEtbEffect?: boolean;
   public isArtifactCreature?: boolean;
   public damage?: number;
+  public startingLoyalty?: number; // Planeswalker only
+  public loyalty?: number; // Planeswalker only
+  public abilities?: Array<ActivatedAbility>;
 
   public constructor(card: Card) {
     this.uuid = uuidv4();
     this.type = card.type;
     this.name = card.name;
-    this.convertedManaCost = card.convertedManaCost;
+    this.cmc = card.cmc;
     this.keywords = card.keywords;
     if (card.subtype !== null) {
       this.subtype = card.subtype;
@@ -61,6 +67,14 @@ export class Permanent {
     this.keywords.push(keyword);
   }
 
+  public toString(): string {
+    let resultStr = '\n::::\nPERMANENT:\n';
+    return _.chain(_.each(this, (key: string) => {
+      if (resultStr === '') { resultStr += '\n::::\nPERMANENT:\n'; }
+      resultStr += key + ': ' + this[key].toString();
+    })).value();
+  }
+
 }
 
 export class Creature extends Permanent {
@@ -82,7 +96,7 @@ export class Creature extends Permanent {
     const theCreatureCard: Card = {
       'type': 'creature',
       'name': perm.name,
-      'convertedManaCost': perm.convertedManaCost,
+      'cmc': perm.cmc,
       'owner': perm.owner,
       'controller': perm.controller,
       'zone': perm.zone,

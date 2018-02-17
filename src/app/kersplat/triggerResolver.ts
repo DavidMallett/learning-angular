@@ -22,9 +22,9 @@ export class TriggerResolver {
 
   public resolve(): void {
     this.pendingEffect = this.stack.pop();
-    switch(){} // check to see what the effect is
+    // switch(){} // check to see what the effect is
 
-    if(this.pendingEffect.target === null || this.pendingEffect.target === undefined) {
+    // if(this.pendingEffect.target === null || this.pendingEffect.target === undefined) {
       // handle targets here
       // gameInstance
     }

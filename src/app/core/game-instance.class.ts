@@ -3,11 +3,13 @@ import { Battlefield } from './battlefield.class';
 import { Permanent, Creature } from './permanent.component';
 import * as uuid from 'uuid';
 const _ = require('lodash');
+const fs = require('fs');
 
 const uuidv4 = require('uuid/v4');
 
 export class GameInstance {
-  public static currentGameInstanceUuid: string;
+  public static currentGameInstance: GameInstance;
+  public static currentBattlefield: Battlefield;
   public uuid: string;
   public players: Player[];
   public format: string;
@@ -21,7 +23,26 @@ export class GameInstance {
     this.objects = [];
     this.players = players;
     this.battlefield = new Battlefield(this.uuid);
-    GameInstance.currentGameInstanceUuid = this.uuid;
+    GameInstance.currentBattlefield = this.battlefield;
+    fs.appendFile('currentGameInstance.txt', this.toString(), (err) => {
+      if (err) { throw err; }
+    });
+  }
+
+  public static battlefield(): Battlefield {
+    return GameInstance.currentBattlefield;
+  }
+
+  public toString(): string {
+    return _.join([
+      this.uuid,
+      this.players,
+      this.format,
+      this.objects,
+      this.battlefield,
+      this.activePlayer.uuid
+    ], '\n::::\n');
+    // TODO: write toString() for Player, Battlefield, Objects, Hand / CardsinHand
   }
 
   public theBattlefield(): Battlefield {
@@ -69,27 +90,30 @@ export class GameInstance {
 
   public applyStateBasedActions(): void { // consider returning a Promise to make this thenable
     for (let i = 0; i < this.objects.length; i++) {
-      // check for lethal damage or toughness below 1
+      // check for lethal damage on creatures or toughness below 1
       if (this.objects[i].type === 'creature') {
         if (this.objects[i].damage > this.objects[i].toughness || this.objects[i].toughness < 1) {
           this.objects[i].die();
           _.pull(this.objects, this.objects[i]);
         }
       }
-      // check for legend rule
-      if (this.objects[i].supertype !== null && this.objects[i].supertype === 'legendary') {
-        
-      }
-
+      // check for Planeswalkers with no loyalty counters
+      if (this.objects[i].type === 'planeswalker') {
+        if (this.objects[i].loyalty < 1) {
+          this.objects[i].die();
+          _.pull(this.objects, this.objects[i]);
+        }
       }
     }
+    // check for legend rule
+    _.each(this.players, (player) => {
+      player.applyLegendRule();
+    });
   }
 
-  public applyDamageToObject(objectId: string, amount: number): void {
-    if()
-    
-    if ('toughness' in )
-  }
+  // public applyDamageToObject(objectId: string, amount: number): void {
+
+  // }
 }
 
 /*

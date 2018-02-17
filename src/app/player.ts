@@ -37,9 +37,20 @@ export class Player {
     this.manaPool = [];
   }
 
+  public toString(): string {
+    const toReturn = '------\nPlayer:\n';
+    return toReturn.concat(
+      'uuid: ' + this.uuid + '\n',
+      'currentLife: ' + this.currentLife.toString() + '\n',
+      'manaPool: ' + this.manaPool.toString() + '\n',
+      'Played land for turn: ' + this.hasPlayedLandThisTurn.toString() + '\n',
+      'Cards in hand: ' + this.hand.toString() + '\n',
+      'Is active player? ' + this.isActivePlayer + '\n');
+  }
+
   public drawCard(): void {
     const newCard: Card = this.deck.draw();
-    newCard.uuid = uuidv4();
+    // newCard.uuid = uuidv4();
     this.hand.add(newCard);
   }
 

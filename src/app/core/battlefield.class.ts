@@ -33,6 +33,28 @@ export class Battlefield {
     this.phase = 'firstMainPhase';
   }
 
+  public toString(): string {
+    let resultStr = '-----\nBATTLEFIELD:\n';
+    _.each(this.creatures, (c) => {
+      resultStr += 'CREATURE:' + c.toString() + '\n';
+    });
+    _.each(this.lands, (l) => {
+      resultStr += 'LAND:' + l.toString() + '\n';
+    });
+    _.each(this.artifacts, (a) => {
+      resultStr += 'ARTIFACT:' + a.toString() + '\n';
+    });
+    _.each(this.enchantments, (e) => {
+      resultStr += 'ENCHANTMENT:' + e.toString() + '\n';
+    });
+    _.each(this.planeswalkers, (p) => {
+      resultStr += 'PLANESWALKER:' + p.toString() + '\n';
+    });
+    // do a bunch of stuff
+
+    return resultStr;
+  }
+
   public remove(perm: Permanent): void {
     switch (perm.type) {
       case 'creature':

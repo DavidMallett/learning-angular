@@ -7,6 +7,7 @@ const sprinter = require('./creatures/RIX172.json');
 const keywords = require('./keywords.json');
 const abilities = require('./activatedAbilities.json');
 const triggers = require('./triggeredAbilities.json');
+const _ = require('lodash');
 
 export class OracleText {
 
@@ -15,7 +16,7 @@ export class OracleText {
     constructor(theKeywords: Array<string>) {
         for (let item of theKeywords) {
             item = item.toUpperCase();
-            interpret(item);
+            this.interpret(item);
         }
     }
 
@@ -30,24 +31,15 @@ export class OracleText {
         return result;
     }
 
-
-    function
-
     public interpret(text: string): void {
-        let tmp = text.split(' ');
-        for (let item of tmp) {
-            if (this.keywords.includes(item)) {
-                
-            }
-        }
-        for (let i = 0; i < tmp.length; i++) {
-            let current = tmp[i];
-            switch (tmp[i]) {
-                case(current === keywords.keywords[current])
-            }
-        }
+        const words: Array<string> = text.split(' ');
+        _.each(words, (word: string) => {
+          if (this.keywords.includes(word)) {
+            // run the keyword helper service (todo)
+          } else {
+            // maybe put a switch statement here?
+          }
+        });
     }
-
-    public 
 
 }

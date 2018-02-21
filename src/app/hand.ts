@@ -28,7 +28,7 @@ export class Hand {
   }
 
   public toString(): string {
-    
+    return this.cardsInHand.toString();
   }
 
   public view(): void {

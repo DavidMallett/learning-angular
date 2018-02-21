@@ -3,6 +3,7 @@ import { Card } from './card';
 import { Permanent, Creature, Land, Artifact, Enchantment } from './core/permanent.component';
 import { Deck } from './deck.component';
 import { Battlefield } from './core/battlefield.class';
+import { Graveyard } from './core/graveyard.component';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 
@@ -22,6 +23,7 @@ export class Player {
   public currentLife: number;
   public isActivePlayer?: boolean;
   public manaPool: Array<string>;
+  public yard: Graveyard;
 
   public constructor(deck: Deck, bf: Battlefield) {
     this.startingLife = 20;
@@ -35,6 +37,8 @@ export class Player {
     this.controlsLegends = [];
     this.deck.shuffle();
     this.manaPool = [];
+    this.yard = new Graveyard();
+    this.yard.owner = this;
   }
 
   public toString(): string {
@@ -64,6 +68,10 @@ export class Player {
 
   public hasPriority(): boolean {
     return this.priority;
+  }
+
+  public lose(): void {
+    // todo: add logic for losing the game
   }
 
   public landForTurn(card: Card): void {

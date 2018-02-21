@@ -4,13 +4,25 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine', '@angular/cli'],
+    frameworks: ['mocha', '@angular/cli'],
     plugins: [
+      require('mocha'),
+      require('chai'),
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage-istanbul-reporter'),
-      require('@angular/cli/plugins/karma')
+      require('@angular/cli/plugins/karma'),
+      require('zone.js/dist/zone.js')
+    ],
+    files: [
+      './**/*.spec.ts'
+      // 'node_modules/zone.js/dist/long-stack-trace-zone',
+      // 'node_modules/zone.js/dist/proxy.js',
+      // 'node_modules/zone.js/dist/sync-test',
+      // 'node_modules/zone.js/dist/jasmine-patch',
+      // 'node_modules/zone.js/dist/async-test',
+      // 'node_modules/zone.js/dist/fake-async-test'
     ],
     client:{
       clearContext: false // leave Jasmine Spec Runner output visible in browser

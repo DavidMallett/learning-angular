@@ -27,8 +27,8 @@ export class TriggerResolver {
     // if(this.pendingEffect.target === null || this.pendingEffect.target === undefined) {
       // handle targets here
       // gameInstance
-    }
+    // }
   }
-
 }
+
 

@@ -14,8 +14,8 @@ export class Trigger {
 
   public static prowessTrigger(c: Creature): Trigger {
     return new Trigger(c.uuid, ['self'], () => {
-      
-    })
+      // apply +1/+1 to the originator of this trigger
+    });
   }
 
 }

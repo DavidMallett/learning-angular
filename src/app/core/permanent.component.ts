@@ -69,8 +69,18 @@ export class Permanent {
     this.zone = 'exile';
   }
 
-  public gains(keyword: string): void {
-    this.keywords.push(keyword);
+  // maybe add "text" as an argument here
+  public gains(keyword?: string, ability?: ActivatedAbility): void {
+    if (keyword) {
+      this.keywords.push(keyword);
+    }
+    if (ability) {
+      this.abilities.push(ability);
+    }
+  }
+
+  public has(keyword: string): boolean {
+    return (this.keywords.indexOf(keyword) > 0);
   }
 
   public toString(): string {
@@ -134,6 +144,15 @@ export class Enchantment extends Permanent {
   public constructor(card: Card) {
     super(card);
   }
+
+  // public attach(target: Permanent): void {
+  //   // check that subtype === aura
+  //   if (this.subtype === 'aura') {
+
+  //   } else {
+  //     throw new Error('cannot attach non-aura enchantment');
+  //   }
+  // }
 }
 
 export class Planeswalker extends Permanent {
@@ -143,5 +162,19 @@ export class Planeswalker extends Permanent {
 
   public constructor(card: Card) {
     super(card);
+  }
+
+  public static convert(perm: Permanent): Planeswalker {
+    const thePwCard = {
+      'types': perm.types,
+      'type': _.concat(perm.types, ' '),
+      'name': perm.name,
+      'cmc': perm.cmc,
+      'owner': perm.owner,
+      'startingLoyalty': perm.startingLoyalty,
+      'loyalty': perm.startingLoyalty,
+      'subtype': perm.subtype
+    };
+    return new Planeswalker(thePwCard);
   }
 }

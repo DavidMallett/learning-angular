@@ -24,10 +24,10 @@ const deck1 = [];
  * player1.draw7();
  * player2.draw7();
  * let currentPhase = 'main';
- * 
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
+ *
  */

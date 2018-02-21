@@ -3,6 +3,7 @@ import { TheStack } from './theStack';
 import { GameInstance } from './game-instance.class';
 import { Phase } from '../phase.class';
 import { Logger } from '../util/logger.util';
+import { Player } from '../player';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 
@@ -20,6 +21,8 @@ export class Battlefield {
   public gameId: string;
   public phase: string;
   public logger: Logger;
+  public players: Array<Player>;
+  public activePlayer?: Player;
 
   public constructor(instance: string) {
     this.logger = new Logger();
@@ -29,6 +32,7 @@ export class Battlefield {
     this.enchantments = [];
     this.planeswalkers = [];
     this.fieldEffects = [];
+    this.players = [];
     this.gameId = instance;
     this.phase = 'firstMainPhase';
   }
@@ -55,28 +59,53 @@ export class Battlefield {
     return resultStr;
   }
 
+  public applyStateBasedActionsToCreatures(): void {
+    _.each(this.creatures, (c: Creature) => {
+      // lethal damage / zero toughness check
+      if (c.damage >= c.toughness || c.toughness < 1) {
+        c.die();
+      }
+    });
+  }
+
+  public applyStateBasedActionsToPlayers(): void {
+    _.each(this.players, (p: Player) => {
+      if (p.currentLife < 1) {
+        p.lose();
+      }
+    });
+  }
+
+  public applyStateBasedActionsToPlaneswalkers(): void {
+    _.each(this.planeswalkers, (p: Planeswalker) {
+      if (p.loyalty < 1) {
+        p.die();
+      }
+    });
+  }
+
   public remove(perm: Permanent): void {
     switch (perm.type) {
       case 'creature':
         // The arrow function can be simplified by removing the curly braces and return
         // This used to be: _.remove(this.creature, (c) => { return c.name === perm.name; });
-        _.remove(this.creatures, (c) => c.uuid === perm.uuid);
+        _.remove(this.creatures, (c: Creature) => c.uuid === perm.uuid);
         this.logger.log('removed ' + perm.name + ' from the battlefield');
         break;
       case 'land':
-        _.remove(this.lands, (l) => l.uuid === perm.uuid);
+        _.remove(this.lands, (l: Land) => l.uuid === perm.uuid);
         this.logger.log('removed ' + perm.name + ' from the battlefield');
         break;
       case 'artifact':
-        _.remove(this.artifacts, (a) => a.uuid === perm.uuid);
+        _.remove(this.artifacts, (a: Artifact) => a.uuid === perm.uuid);
         this.logger.log('removed ' + perm.name + ' from the battlefield');
         break;
       case 'enchantment':
-        _.remove(this.enchantments, (e) => e.uuid === perm.uuid);
+        _.remove(this.enchantments, (e: Enchantment) => e.uuid === perm.uuid);
         this.logger.log('removed ' + perm.name + ' from the battlefield');
         break;
       case 'planeswalker':
-        _.remove(this.planeswalkers, (p) => p.uuid === perm.uuid);
+        _.remove(this.planeswalkers, (p: Planeswalker) => p.uuid === perm.uuid);
         this.logger.log('removed ' + perm.name + ' from the battlefield');
         break;
       default:
@@ -109,7 +138,7 @@ export class Battlefield {
         this.registerEnchantment(perm);
         return perm.uuid;
       case 'planeswalker':
-        this.registerPlaneswalker(perm);
+        this.registerPlaneswalker(Planeswalker.convert(perm));
         return perm.uuid;
       default:
         throw new Error('Error: ' + perm.type + ' is not a permanent type');

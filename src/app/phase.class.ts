@@ -57,6 +57,8 @@ export class Phase {
       case 'cleanup':
         this.currentTurn.end();
         this.currentPhase = 'untap';
+        const t: Turn = new Turn(this.currentTurn.nonActivePlayer, Turn.whoseTurn());
+        this.currentTurn = t;
         break;
       default:
         console.log('that is not a step or phase in Magic the Gathering');

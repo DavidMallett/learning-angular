@@ -4,32 +4,46 @@ import { Permanent, Creature, Land, Artifact, Enchantment } from './core/permane
 import { Deck } from './deck.component';
 import { Battlefield } from './core/battlefield.class';
 import { Graveyard } from './core/graveyard.component';
+import { Logger } from './util/logger.util';
+import { Priority } from './core/priority.class';
+import { GameInstance } from './core/game-instance.class';
+import { Match } from './models/match';
+import { TheStack } from './core/theStack';
+import { Turn } from './turn.class';
+import { Cost } from './kersplat/cost.class';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 
 const uuidv4 = require('uuid/v4');
 
 export class Player {
+  public name: string;
   public uuid: string;
   public hand: Hand;
   public deck: Deck;
+  public opponent: Player;
+  // public opponents: Array<Player> // implement this when we move on to multiplayer games
   public controls: Permanent[];
   public owns: Permanent[];
   public controlsLegends: Permanent[];
   public bf: Battlefield;
   public hasPlayedLandThisTurn: boolean;
-  public priority: boolean;
+  public hasPriority: boolean;
+  public priority: Priority;
   public startingLife: number;
   public currentLife: number;
   public isActivePlayer?: boolean;
   public manaPool: Array<string>;
   public yard: Graveyard;
+  public gameScore?: number;
+  public game?: GameInstance; // or Game
+  public inMatch?: Match;
 
-  public constructor(deck: Deck, bf: Battlefield) {
+  public constructor(name: string, deck: Deck) {
     this.startingLife = 20;
     this.currentLife = this.startingLife;
     this.uuid = uuidv4();
-    this.bf = bf;
+    this.bf = GameInstance.bf(); // not sure if this is actually needed
     this.hand = new Hand();
     this.deck = deck;
     this.controls = [];
@@ -39,6 +53,11 @@ export class Player {
     this.manaPool = [];
     this.yard = new Graveyard();
     this.yard.owner = this;
+    this.gameScore = 0;
+    this.hasPriority = false;
+    this.priority = new Priority(this, this.opponent);
+    this.game = GameInstance.game();
+    this.inMatch = this.game.match;
   }
 
   public toString(): string {
@@ -49,7 +68,8 @@ export class Player {
       'manaPool: ' + this.manaPool.toString() + '\n',
       'Played land for turn: ' + this.hasPlayedLandThisTurn.toString() + '\n',
       'Cards in hand: ' + this.hand.toString() + '\n',
-      'Is active player? ' + this.isActivePlayer + '\n');
+      'Is active player? ' + this.isActivePlayer + '\n',
+      'Has priority? ' + this.hasPriority);
   }
 
   public drawCard(): void {
@@ -58,20 +78,19 @@ export class Player {
     this.hand.add(newCard);
   }
 
-  public givePriority(): void {
-    this.priority = true;
+  public passTurn(): void {
+    this.game.passTurn(this, this.opponent);
   }
 
-  public passPriority(): void {
-    this.priority = false;
-  }
-
-  public hasPriority(): boolean {
-    return this.priority;
-  }
 
   public lose(): void {
     // todo: add logic for losing the game
+  }
+
+  public win(): void {
+    // todo: add logic for winning the game
+    this.gameScore++;
+
   }
 
   public landForTurn(card: Card): void {
@@ -83,7 +102,7 @@ export class Player {
       perm.controller = this;
       this.controls.push(perm);
       this.owns.push(perm);
-      this.bf.register(perm);
+      // this.bf.register(perm);
       this.hasPlayedLandThisTurn = true;
       if (perm.supertype !== null && perm.supertype === 'legendary') {
         this.controlsLegends.push(perm);
@@ -119,6 +138,44 @@ export class Player {
         });
       }
     });
+  }
+
+  public passPriority(): void {
+    if (!this.hasPriority) {
+      throw new Error('you dont have priority and therefore cannot pass it');
+    } else {
+      this.hasPriority = false;
+      this.priority.pass();
+    }
+  }
+
+  public cast(card: Card): void {
+    // check for priority
+    if (!this.hasPriority) {
+      throw new Error('cannot cast spells if you do not have priority');
+    } else {
+      // check for timing restrictions based on type
+      if (card.type !== 'instant' &&
+        _.indexOf(card.keywords, 'flash') < 0 &&
+        (this.game.phase.phaseName() !== 'firstMainPhase' ||
+          this.game.phase.phaseName() !== 'postCombatMainPhase')
+      ) {
+        throw new Error('Cannot case sorcery-speed spells outside of the main phase');
+      } else {
+        // possibly more checks - add one for modifiers?
+        // pay the cost and put the spell on the stack
+        const theCost: Cost = {
+          'manaCost': card.manaCost,
+          'tap': false,
+          'additionalCosts': card.additionalCosts || []
+        };
+      }
+
+
+      TheStack.push(card);
+      this.priority.pass();
+      // additional logic to check for triggers, pass priority, responses, etc
+    }
   }
 
   public castSpell(card: Card): void {

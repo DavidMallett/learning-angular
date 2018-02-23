@@ -1,6 +1,13 @@
 import { Player } from '../player';
 import { Battlefield } from './battlefield.class';
 import { Permanent, Creature } from './permanent.component';
+import { Turn } from '../turn.class';
+import { StaticEffect } from '../kersplat/static-effect.class';
+import { Logger } from '../util/logger.util';
+import { Zone } from '../models/zone.class';
+import { Match } from '../models/match';
+import { Phase } from '../phase.class';
+import { Modifier } from './modifier.class';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 const fs = require('fs');
@@ -10,32 +17,78 @@ const uuidv4 = require('uuid/v4');
 export class GameInstance {
   public static currentGameInstance: GameInstance;
   public static currentBattlefield: Battlefield;
-  public uuid: string;
+  public gameNumber: number;
+  public id: string;
   public players: Player[];
   public format: string;
+  public effects: Array<StaticEffect>;
   public objects: Permanent[];
   public battlefield: Battlefield;
   public activePlayer: Player;
+  public zones: Array<Zone>;
+  public match: Match;
+  public phase: Phase;
+  public turn: Turn;
+  public turns: Array<Turn>;
 
   constructor(format: string, players: Player[]) {
     this.format = format;
-    this.uuid = uuidv4();
+    this.id = uuidv4();
     this.objects = [];
     this.players = players;
-    this.battlefield = new Battlefield(this.uuid);
+    this.match = Match.current();
+    this.phase = new Phase('firstMainPhase');
+    this.battlefield = new Battlefield(this.id);
+    this.turn = new Turn(players[0], players[1]);
+    this.turns.push(this.turn);
     GameInstance.currentBattlefield = this.battlefield;
     fs.appendFile('currentGameInstance.txt', this.toString(), (err) => {
       if (err) { throw err; }
     });
   }
 
-  public static battlefield(): Battlefield {
+  public static game(): GameInstance {
+    return GameInstance.currentGameInstance;
+  }
+
+  public static bf(): Battlefield {
     return GameInstance.currentBattlefield;
+  }
+
+  public end(): string {
+    // todo: logic to determine a winner if the game ends due to an unresolvable stack or board state
+    // todo: actually end the game / prevent it from going on
+    return _.join(['GAME OVER\n\n', this.toString()], '\n');
+  }
+
+  public passTurn(playerPassing: Player, playerStartingTurn: Player): void {
+    this.turn.end();
+
+  }
+
+  public applyCleanupStep(): void {
+    _.each(this.effects, (effect: StaticEffect) => {
+      if (effect.endsAt === 'eot' || effect.endsAt === 'endOfTurn' || effect.endsAt === 'cleanupStep') {
+        _.pull(this.effects, effect);
+      }
+    });
+    _.each(this.objects, (obj: Permanent, index: number) => {
+      if (obj.type === 'creature') {
+        obj.damage = 0;
+      }
+      if (obj.modifiers.length > 0) {
+        _.each(obj.modifiers, (mod: Modifier) => {
+          if (mod.duration === 'eot') {
+            mod.expire();
+          }
+        });
+      }
+    });
   }
 
   public toString(): string {
     return _.join([
-      this.uuid,
+      this.id,
       this.players,
       this.format,
       this.objects,
@@ -85,7 +138,7 @@ export class GameInstance {
   // }
 
   public lookup(theId: string) {
-
+    // todo: write game instance to disk, then see if we can reload it
   }
 
   public applyStateBasedActions(): void { // consider returning a Promise to make this thenable

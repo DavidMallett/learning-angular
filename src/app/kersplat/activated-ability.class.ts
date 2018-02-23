@@ -3,6 +3,7 @@ import { Cost } from './cost.class';
 import { TheStack } from '../core/theStack';
 import { GameInstance } from '../core/game-instance.class';
 import { Target } from '../models/target.interface';
+import { Logger } from '../util/logger.util';
 
 export class ActivatedAbility {
   public cost: Cost;

@@ -1,12 +1,12 @@
 const _ = require('lodash');
 
 export class Cost {
-  public tap: boolean;
+  public tap: boolean; // whether something has to Tap (with the tap symbol) as a cost
   public manaCost?: string;
   public loyaltyCost?: string;
-  public discardCost?: number;
+  public discardCost?: number; // whether one must discard cards as part of the cost
   public lifeCost?: number;
-  public additionalCosts: Array<any>;
+  public additionalCosts?: Array<any>; // i.e. 'remove a blue card in your hand from the game', 'sacrifice a vampire', etc
 
   // Players will draw from their own resources to create a Cost
   public constructor(costs: Cost) {

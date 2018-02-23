@@ -4,6 +4,8 @@ import { GameInstance } from './game-instance.class';
 import { Phase } from '../phase.class';
 import { Logger } from '../util/logger.util';
 import { Player } from '../player';
+import { Zone } from '../models/zone.class';
+import { Match } from '../models/match';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 
@@ -77,7 +79,7 @@ export class Battlefield {
   }
 
   public applyStateBasedActionsToPlaneswalkers(): void {
-    _.each(this.planeswalkers, (p: Planeswalker) {
+    _.each(this.planeswalkers, (p: Planeswalker) => {
       if (p.loyalty < 1) {
         p.die();
       }

@@ -47,6 +47,7 @@ export class Card implements CardInterface {
   public supertype?: string; // concat the supertypes array
   public subtype?: string; // concatenation of subtypes array
   public keywords?: Array<string>;
+  public additionalCosts?: Array<string>;
 
   public constructor(name: string) {
     this.name = name;
@@ -63,6 +64,5 @@ export class Card implements CardInterface {
     }).then(() => {
       return resultStr;
     });
-
   }
 }

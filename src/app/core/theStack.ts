@@ -4,10 +4,11 @@ const _ = require('lodash');
 
 export class TheStack {
 
-  public static theStack: Object[];
+  public static theStack: Array<any>;
 
-  public static push(uuid: string): void {
-    TheStack.theStack.push(uuid);
+  // things that go on the stack: spells, abilities, triggers
+  public static push(obj: any): void {
+    TheStack.theStack.push(obj);
   }
 
   public static resolve(): void {

@@ -2,6 +2,8 @@ import { Card } from '../card';
 import { CardInterface } from '../models/card.interface';
 import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
+import { Logger } from '../util/logger.util';
+import { Modifier } from './modifier.class';
 import * as uuid from 'uuid';
 
 const _ = require('lodash');
@@ -35,6 +37,7 @@ export class Permanent {
   public startingLoyalty?: number; // Planeswalker only
   public loyalty?: number; // Planeswalker only
   public abilities?: Array<ActivatedAbility>;
+  public modifiers?: Array<Modifier>;
 
   public constructor(card: Card) {
     this.uuid = uuidv4();
@@ -53,6 +56,7 @@ export class Permanent {
     }
     this.hasStateBasedEffect = (card.hasStateBasedEffect ? true : false);
     this.hasEtbEffect = (card.hasEtbEffect ? true : false);
+    this.modifiers = [];
     this.zone = 'battlefield';
   }
 

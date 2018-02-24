@@ -1,33 +1,24 @@
 import { Card } from '../card';
 import { EtbEffect } from './etbEffect.class';
-import { Trigger } from './trigger.interface';
+import { Trigger } from './trigger.class';
 import { Interpreter } from './interpreter.class';
 import { KeywordHandler } from './keywordhandler.class';
+import { TheStack } from '../core/theStack';
+import { Target } from '../models/target.interface';
 
 export class TriggerResolver {
-  public stack: Trigger[];
-  public pendingEffect: Trigger;
-  public stateBasedEffects?: string;
-  public stackDepth: number;
 
   constructor() {
-    this.stack = [];
-    this.stackDepth = 0;
+
   }
 
-  public push(trig: Trigger): void {
-    this.stack.push(trig);
-    this.stackDepth++;
-  }
-
-  public resolve(): void {
-    this.pendingEffect = this.stack.pop();
-    // switch(){} // check to see what the effect is
-
-    // if(this.pendingEffect.target === null || this.pendingEffect.target === undefined) {
-      // handle targets here
-      // gameInstance
-    // }
+  public static resolve(trigger: Trigger): void {
+    switch (trigger.target) { // should be target.targetType soon
+      case 'self':
+        break;
+      default:
+        throw new Error('invalid target');
+    }
   }
 }
 

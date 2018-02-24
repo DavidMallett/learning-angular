@@ -3,6 +3,10 @@ import { Phase } from '../../phase.class';
 import { Permanent, Creature, Artifact, Enchantment } from '../permanent.component';
 import { Battlefield } from '../battlefield.class';
 import { TheStack } from '../theStack';
+import * as _ from 'lodash';
+
+// just realized this class is redundant.
+// might abandon it and restart
 
 interface AttackingCreature {
   power: number;
@@ -16,6 +20,7 @@ interface BlockingCreature {
   toughness: number;
   keywords: Array<string>;
   blocking?: AttackingCreature;
+  blockingMultiple?: Array<AttackingCreature>;
 }
 
 interface CombatPhase {
@@ -45,6 +50,7 @@ export class CombatController {
 
   public declareAttackers(attackers: Array<Creature>): void {
     // const theAttackers = new Array<AttackingCreature>();
+    // todo: replace vvv with _.each()
     for (let i = 0; i < attackers.length; i++) {
       const newAttacker: AttackingCreature = {
         power: attackers[i].power,
@@ -59,15 +65,17 @@ export class CombatController {
     }
   }
 
-  // public declareBlockers(blockers: Array<BlockingCreature>): void {
-  //   for (let i = 0; i < this.attackers.length; i++) {
-
-  //   }
-  // }
+  public declareBlockers(blockers: Array<BlockingCreature>): void {
+    _.each(blockers, (b: BlockingCreature) => {
+      if (b.blocking || b.blockingMultiple) {
+        this.assignBlocker(b, b.blocking)
+      }
+    });
+  }
 
   private assignBlocker(blocker: BlockingCreature, attacker: AttackingCreature): void {
     attacker.blockedBy.push(blocker);
-    blocker.blocking = attacker;
+    this.blockers.push(blocker);
   }
 
   public assignDamage(): void {

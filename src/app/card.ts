@@ -2,6 +2,7 @@ import { OracleText } from './oracleText.js';
 import { Player } from './player';
 import { CardInterface } from './models/card.interface';
 import { CardInfoService } from './services/card-info.service';
+import { Zone } from './models/zone.class';
 const mtg = require('mtgsdk');
 const _ = require('lodash');
 const cis: CardInfoService = new CardInfoService();
@@ -48,6 +49,7 @@ export class Card implements CardInterface {
   public subtype?: string; // concatenation of subtypes array
   public keywords?: Array<string>;
   public additionalCosts?: Array<string>;
+  public zone?: Zone; //
 
   public constructor(name: string) {
     this.name = name;

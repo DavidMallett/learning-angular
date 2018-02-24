@@ -1,5 +1,8 @@
 import { GameInstance } from './game-instance.class';
+import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { AbilityResolver } from '../kersplat/ability-resolver.class';
+import { Trigger } from '../kersplat/trigger.class';
+import { TriggerResolver } from '../kersplat/triggerResolver'
 const _ = require('lodash');
 
 export class TheStack {
@@ -13,12 +16,10 @@ export class TheStack {
 
   public static resolve(): void {
     const thingToResolve: any = TheStack.theStack.pop();
-    switch (thingToResolve.type) {
-      case 'ActivatedAbility':
-        AbilityResolver.resolve(thingToResolve);
-        break;
-      default:
-        console.log('nothing to resolve or cannot recognize type of thing you are trying to resolve');
+    if (thingToResolve instanceof ActivatedAbility) {
+      AbilityResolver.resolve(thingToResolve);
+    } else if (thingToResolve instanceof Trigger) {
+      TriggerResolver.resolve(thingToResolve);
     }
   }
 

@@ -11,8 +11,11 @@ import { Match } from './models/match';
 import { TheStack } from './core/theStack';
 import { Turn } from './turn.class';
 import { Cost } from './kersplat/cost.class';
+import { Parser } from './util/parser.util';
+
 import * as uuid from 'uuid';
 const _ = require('lodash');
+const parser = new Parser();
 
 const uuidv4 = require('uuid/v4');
 
@@ -165,10 +168,13 @@ export class Player {
         // possibly more checks - add one for modifiers?
         // pay the cost and put the spell on the stack
         const theCost: Cost = {
-          'manaCost': card.manaCost,
+          'manaCost': parser.parseTokenArray(parser.convertCostStringToTokenArray(card.manaCost)),
           'tap': false,
           'additionalCosts': card.additionalCosts || []
         };
+        const payingCost: Cost = {
+          'manaCost': _.pullAll(this.manaPool, theCost.manaCost.split(' '))
+        }
       }
 
 
@@ -176,6 +182,11 @@ export class Player {
       this.priority.pass();
       // additional logic to check for triggers, pass priority, responses, etc
     }
+  }
+
+  public payMana(mana: string): Cost {
+    // logic to parse string as a manaCost
+
   }
 
   public castSpell(card: Card): void {

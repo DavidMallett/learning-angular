@@ -6,9 +6,11 @@ import { Logger } from '../util/logger.util';
 import { Player } from '../player';
 import { Zone } from '../models/zone.class';
 import { Match } from '../models/match';
+import { Trigger } from '../kersplat/trigger.class';
+import { TriggerHelperService } from '../services/trigger-helper.service';
 import * as uuid from 'uuid';
 const _ = require('lodash');
-
+const trig: TriggerHelperService = new TriggerHelperService();
 
 const thePhases = require('../phases.json');
 const uuidv4 = require('uuid/v4');

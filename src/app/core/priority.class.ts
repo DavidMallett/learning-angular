@@ -33,4 +33,4 @@ export class Priority {
   // if (spell.resolved) {
     // checkStateBasedActions()
   // }
-})
+// })

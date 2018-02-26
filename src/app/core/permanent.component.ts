@@ -19,6 +19,7 @@ export class Permanent {
   public owner: Player;
   public controller: Player;
   public keywords: Array<string>;
+  public tapped: boolean;
   // optional
   public types?: Array<string>;
   public superTypes?: Array<string>;
@@ -58,6 +59,26 @@ export class Permanent {
     this.hasEtbEffect = (card.hasEtbEffect ? true : false);
     this.modifiers = [];
     this.zone = 'battlefield';
+    this.tapped = false;
+
+    // todo: add logic for owner and controller
+
+  }
+
+  public tap(): void {
+    if (this.tapped) {
+      throw new Error('permanent ' + this.name + ' is already tapped');
+    } else {
+      this.tapped = true;
+    }
+  }
+
+  public untap(): void {
+    if (this.tapped) {
+      this.tapped = false;
+    } else {
+      // do nothing
+    }
   }
 
   public die(): void {
@@ -130,8 +151,37 @@ export class Creature extends Permanent {
 
 export class Land extends Permanent {
 
+  public produces?: string;
+  public producesAmount?: number;
+
   public constructor(card: Card) {
     super(card);
+  }
+
+  public static convert(perm: Permanent): Land {
+    const theLandCard: Card = {
+      'types': perm.types,
+      'type': _.concar(perm.types, ' '),
+      'name': perm.name,
+      'cmc': perm.cmc,
+      'owner': perm.owner,
+      'subtype': perm.subtype,
+      'supertype': perm.supertype || null
+    };
+    return new Land(theLandCard);
+  }
+
+  public makeMana(symbol: string): string {
+    this.tap();
+    if (this.produces.indexOf(symbol) > 0) {
+      let result = '';
+      for (let i = 0; i < this.producesAmount; i++) {
+        result += symbol;
+      }
+      return result;
+    } else {
+      throw new Error('land ' + this.name + ' does not produce ' + symbol);
+    }
   }
 
 }

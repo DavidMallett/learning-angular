@@ -19,6 +19,10 @@ export class Logger {
     }));
   }
 
+  public static getObjectType(obj: any): string {
+    return (obj.prototype.constructor.name);
+  }
+
   public log(str: string) {
     this.logs.push(str);
   }
@@ -29,4 +33,5 @@ export class Logger {
       // logs now appended to logs.txt
     });
   }
+
 }

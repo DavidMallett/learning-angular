@@ -12,6 +12,8 @@ import { TheStack } from './core/theStack';
 import { Turn } from './turn.class';
 import { Cost } from './kersplat/cost.class';
 import { Parser } from './util/parser.util';
+import { ManaCost } from './core/mana-cost.class';
+import { TriggerHelperService } from './services/trigger-helper.service';
 
 import * as uuid from 'uuid';
 const _ = require('lodash');
@@ -81,10 +83,30 @@ export class Player {
     this.hand.add(newCard);
   }
 
+  public untapAll(): void {
+    _.each(this.controls, (p: Permanent, i: number) => {
+      p.untap();
+    });
+  }
+
   public passTurn(): void {
     this.game.passTurn(this, this.opponent);
   }
 
+  public tapForMana(land: Land, symbol: string): void {
+    if (land.tapped) {
+      throw new Error('cannot tap a tapped land for mana');
+    } else {
+      land.makeMana(symbol);
+    }
+  }
+
+  public payMana(cost: ManaCost): void {
+    ManaCost.subtract(this.manaPool, cost);
+    // _.each(cost.toString().split(''), (letter: string, index: number) => {
+    //   util.subtract(this.manaPool, )
+    // })
+  }
 
   public lose(): void {
     // todo: add logic for losing the game
@@ -172,9 +194,7 @@ export class Player {
           'tap': false,
           'additionalCosts': card.additionalCosts || []
         };
-        const payingCost: Cost = {
-          'manaCost': _.pullAll(this.manaPool, theCost.manaCost.split(' '))
-        }
+        ManaCost.subtract(this.manaPool, theCost.manaCost);
       }
 
 
@@ -184,10 +204,11 @@ export class Player {
     }
   }
 
-  public payMana(mana: string): Cost {
-    // logic to parse string as a manaCost
+  // public payMana(mana: string): Cost {
+  //   // logic to parse string as a manaCost
+    // update: don't remember what I was doing here either
 
-  }
+  // }
 
   public castSpell(card: Card): void {
     // validate card is in hand

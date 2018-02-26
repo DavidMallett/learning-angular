@@ -20,6 +20,7 @@
         "defender",
         "flash",
         "unblockable",
-        "storm"
+        "storm",
+        "hexproof"
     ]
 }

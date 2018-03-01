@@ -4,8 +4,10 @@ import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { Logger } from '../util/logger.util';
 import { Modifier } from './modifier.class';
+import { Target } from '../models/target.interface';
 import * as uuid from 'uuid';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+const _ = require('lodash');
 
 const uuidv4 = require('uuid/v4');
 
@@ -26,6 +28,7 @@ export class Spell {
   public text?: string;
   public subtypes?: Array<string>;
   public subtype?: string;
+  public target?: Target;
 
   public constructor(card: Card) {
     this.uuid = uuidv4();
@@ -33,12 +36,17 @@ export class Spell {
     this.types = card.types;
     this.type = _.concat(this.types, ' ');
     this.cmc = card.cmc;
+    this.text = card.text;
     // todo: add logic for owner and controller
     this.subtypes = card.subtypes || [];
     this.subtype = _.concat(this.subtypes, ' ') || null;
     this.colors = card.colors || [];
     this.modifiers = [];
     this.keywords = card.keywords || [];
+  }
+
+  public resolve(): void {
+
   }
 
 

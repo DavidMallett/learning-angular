@@ -4,6 +4,7 @@ import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { Logger } from '../util/logger.util';
 import { Modifier } from './modifier.class';
+import { Trigger } from '../kersplat/trigger.class';
 import * as uuid from 'uuid';
 
 const _ = require('lodash');
@@ -39,6 +40,7 @@ export class Permanent {
   public loyalty?: number; // Planeswalker only
   public abilities?: Array<ActivatedAbility>;
   public modifiers?: Array<Modifier>;
+  public triggers?: Array<Trigger>;
 
   public constructor(card: Card) {
     this.uuid = uuidv4();
@@ -92,6 +94,10 @@ export class Permanent {
 
   public exile(): void {
     this.zone = 'exile';
+  }
+
+  public addModifier(mod: Modifier): void {
+    this.modifiers.push(mod);
   }
 
   // maybe add "text" as an argument here
@@ -166,7 +172,7 @@ export class Land extends Permanent {
       'cmc': perm.cmc,
       'owner': perm.owner,
       'subtype': perm.subtype,
-      'supertype': perm.supertype || null
+      'supertypes': perm.superTypes || null
     };
     return new Land(theLandCard);
   }

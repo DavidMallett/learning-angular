@@ -2,14 +2,14 @@ import { CardInterface } from '../models/card.interface';
 import { DeckInterface } from '../models/deck.interface';
 import { Deck } from '../deck.component';
 import { CardInfoService } from './card-info.service';
+import { Injectable } from '@angular/core';
 const mtg = require('mtgsdk');
 const fs = require('fs');
 const _ = require('lodash');
 const cis = new CardInfoService();
 
+@Injectable()
 export class DeckBuilderService {
-
-
 
   public readDeckFromTxt(name: string, filePath: string): Deck {
     return _.chain(fs.readFile(filePath, (err, data) => {

@@ -17,6 +17,10 @@ export class Priority {
     Priority.playerWithPriority = this.ap;
   }
 
+  public static who(): Player {
+    return Priority.playerWithPriority;
+  }
+
   public pass(): void {
     const ap = this.ap;
     const nap = this.nap;

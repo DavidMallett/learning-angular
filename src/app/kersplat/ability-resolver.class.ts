@@ -4,7 +4,7 @@ import { ActivatedAbility } from './activated-ability.class';
 import { Target } from '../models/target.interface';
 
 const _ = require('lodash');
-const theBattlefield = GameInstance.battlefield();
+const theBattlefield = GameInstance.bf();
 
 export class AbilityResolver {
 

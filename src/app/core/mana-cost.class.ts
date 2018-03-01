@@ -5,7 +5,8 @@ import { GameInstance } from './game-instance.class';
 import { Target } from '../models/target.interface';
 import { Logger } from '../util/logger.util';
 import { Parser } from '../util/parser.util';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+const _ = require('lodash');
 const parser = new Parser();
 
 

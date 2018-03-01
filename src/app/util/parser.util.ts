@@ -5,7 +5,8 @@ import { Battlefield } from '../core/battlefield.class';
 import { TheStack } from '../core/theStack';
 import { Cost } from '../kersplat/cost.class';
 import { ManaCost } from '../core/mana-cost.class';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+const _ = require('lodash');
 
 export class Parser {
 

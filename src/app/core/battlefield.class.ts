@@ -8,9 +8,12 @@ import { Zone } from '../models/zone.class';
 import { Match } from '../models/match';
 import { Trigger } from '../kersplat/trigger.class';
 import { TriggerHelperService } from '../services/trigger-helper.service';
+import { Source } from '../models/source';
+import { StaticEffect } from '../kersplat/static-effect.class';
+import { CombatController } from './combat/combatController';
 import * as uuid from 'uuid';
 const _ = require('lodash');
-const trig: TriggerHelperService = new TriggerHelperService();
+const ths: TriggerHelperService = new TriggerHelperService();
 
 const thePhases = require('../phases.json');
 const uuidv4 = require('uuid/v4');
@@ -21,12 +24,13 @@ export class Battlefield {
   public artifacts: Artifact[];
   public enchantments: Enchantment[];
   public planeswalkers: Planeswalker[];
-  public fieldEffects: string[];
+  public fieldEffects: Array<StaticEffect>;
   public gameId: string;
-  public phase: string;
+  public phase: Phase;
   public logger: Logger;
   public players: Array<Player>;
   public activePlayer?: Player;
+  public cc: CombatController;
 
   public constructor(instance: string) {
     this.logger = new Logger();
@@ -38,7 +42,8 @@ export class Battlefield {
     this.fieldEffects = [];
     this.players = [];
     this.gameId = instance;
-    this.phase = 'firstMainPhase';
+    this.phase = new Phase('firstMainPhase');
+    this.cc = null;
   }
 
   public toString(): string {
@@ -61,6 +66,27 @@ export class Battlefield {
     // do a bunch of stuff
 
     return resultStr;
+  }
+
+  public toNextPhase(): void {
+    if (this.validateEmptyStack()) {
+      this.phase.advancePhase();
+    } else {
+      throw new Error('cannot advance to next phase because there are actions on the stack');
+    }
+  }
+
+  public applyStateBasedActions(): void {
+
+    this.applyStateBasedActionsToCreatures();
+    this.applyStateBasedActionsToPlaneswalkers();
+    this.applyStateBasedActionsToPlayers();
+  }
+
+  public checkStateBasedAbilities(): void {
+    _.each(this.fieldEffects, (effect, index) => {
+      effect.evaluateCondition();
+    });
   }
 
   public applyStateBasedActionsToCreatures(): void {
@@ -86,6 +112,10 @@ export class Battlefield {
         p.die();
       }
     });
+  }
+
+  public validateEmptyStack(): boolean {
+    return TheStack.theStack.length === 0;
   }
 
   public remove(perm: Permanent): void {
@@ -121,10 +151,18 @@ export class Battlefield {
     return this.creatures;
   }
 
-  public validateSorcerySpeed(perm: Permanent) {
+  public validateSorcerySpeed(perm: Permanent): boolean {
     return (perm.keywords.indexOf('flash') < 0 &&
-      (this.phase === 'firstMainPhase' ||
-      this.phase === 'postCombatMainPhase'));
+      (this.phase.name() === 'firstMainPhase' ||
+      this.phase.name() === 'postCombatMainPhase'));
+  }
+
+  public etb(perm: Permanent): void {
+    if (perm.hasEtbEffect) {
+      ths.stackTriggers(perm.triggers);
+    } else {
+      Logger.gLog(perm.name + ' entered the battlefield without triggering anything');
+    }
   }
 
   public register(perm: Permanent): string {
@@ -133,7 +171,7 @@ export class Battlefield {
         this.registerCreature(Creature.convert(perm));
         return perm.uuid;
       case 'land':
-        this.registerLand(perm);
+        this.registerLand(Land.convert(perm));
         return perm.uuid;
       case 'artifact':
         this.registerArtifact(perm);
@@ -169,7 +207,7 @@ export class Battlefield {
     this.planeswalkers.push(p);
   }
 
-  private registerFieldEffect(effect: string): void {
+  private registerFieldEffect(effect: StaticEffect): void {
     this.fieldEffects.push(effect);
   }
 

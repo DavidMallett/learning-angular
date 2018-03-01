@@ -1,10 +1,13 @@
 import { Permanent, Creature, Artifact, Enchantment, Planeswalker, Land } from '../core/permanent.component';
 import { Modifier } from '../core/modifier.class';
+import { Injectable } from '@angular/core';
 import { Logger } from '../util/logger.util';
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
+const _ = require('lodash');
 
 const creatureKeywords: Array<string> = require('./lists/creatureKeywords.json').creatureKeywords;
 
+@Injectable()
 export class KeywordHelperService {
 
   // source may be able to be inferred based on keyword

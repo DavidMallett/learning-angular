@@ -24,11 +24,11 @@ export class Zone {
   }
 
   public pullPerm(perm: Permanent): Permanent {
-    return _.pull(this.permanents, perm);
+    return _.pull(this.permanents, perm)[0];
   }
 
   public pullCard(card: Card): Card {
-    return _.pull(this.cards, card);
+    return _.pull(this.cards, card)[0];
   }
 
 

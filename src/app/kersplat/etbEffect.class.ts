@@ -1,16 +1,20 @@
 import { Card } from '../card';
-import { Trigger } from './trigger.interface';
+import { Trigger } from './trigger.class';
 import { GameInstance } from '../core/game-instance.class';
+import { Target } from '../models/target.interface';
+import { Source } from '../models/source';
 
-export class EtbEffect implements Trigger {
-  public gameInstance: string;
-  public actions: string[];
-  public originator: string; // UUID of in-game object
-  public target: string; // UUID of player or in-game object; e.g. 'eachOpponent', '{object: qrvx7}', 'anyNumberofCreatures'
-  public effect: string; // e.g. '2dmg', '+1/+1'
+export class EtbEffect extends Trigger {
+  public gameInstance: GameInstance;
+  public actions: Array<string>;
+  public source: any; // reference to source of trigger
+  public target: Target; // UUID of player or in-game object; e.g. 'eachOpponent', '{object: qrvx7}', 'anyNumberofCreatures'
+  public effect: Array<string>; // e.g. '2dmg', '+1/+1'
   public isStateBasedEffect: boolean; // true if the effect from the trigger persist through phase/state changes
 
-  constructor() {}
+  constructor(id: string) {
+    super(id);
+  }
 
   public append(action: string): void {
     this.actions.push(action);
@@ -21,7 +25,7 @@ export class EtbEffect implements Trigger {
   public resolve(): void {
     // const game = GameInstance.prototype.getGameInstance();
     const obj = {
-      'originator': this.originator,
+      'source': this.source,
       'action': {
         'target': this.target,
         'effect': this.effect

@@ -12,8 +12,10 @@ export class Cost {
   public additionalCosts?: Array<any>; // i.e. 'remove a blue card in your hand from the game', 'sacrifice a vampire', etc
 
   // Players will draw from their own resources to create a Cost
-  public constructor() {
-    this.tap = false;
+  // 'descriptor' will be used to shortcut to particular Cost templates
+  // for example, if 'taponly' then create a new Cost with this.tap === true
+  public constructor(desc?: string) {
+    desc === 'taponly' ? this.tap = true : this.tap = false;
     this.manaCost = new ManaCost();
     this.loyaltyCost = null;
     this.discardCost = 0;

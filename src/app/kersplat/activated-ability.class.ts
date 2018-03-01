@@ -4,27 +4,35 @@ import { TheStack } from '../core/theStack';
 import { GameInstance } from '../core/game-instance.class';
 import { Target } from '../models/target.interface';
 import { Logger } from '../util/logger.util';
+import { Source } from '../models/source';
 
 export class ActivatedAbility {
+  public id: string;
   public cost: Cost;
   public type: string;
   public target: Target;
-  public targets: Array<string>; // array of uuids
-  public originId: string;
-  // OriginId is a UUID of the object that originated the ability
-  // TODO: Find way to reference any object in the GameInstance arbitrarily via uuid
+  public targets?: Array<Target>; // array of uuids
+  public source: Source;
   public effect: Function;
 
-  public constructor(cost: Cost, originId: string, target: Target, effect: Function) {
+  public constructor(source: Source, cost: Cost, target?: Target, targets?: Array<Target>) {
+    this.id = source.type + source.id;
+    this.source = source;
     this.cost = cost;
-    this.originId = originId;
-    this.target = target;
-    this.targets = this.target.targetIds;
-    this.type = 'ActivatedAbility';
+    this.target = target || new Target('self', source.reference);
+    this.targets = targets || []; // only for abilities with multiple targets
   }
 
-  public changeStateOfOrigin(key: string, val: string): void {
-    const theTargetId: string = this.originId;
+  // public constructor(cost: Cost, target?: Target, effect?: Function) {
+  //   this.cost = cost;
+  //   this.originId = '';
+  //   this.target = target || null;
+  //   this.targets = this.target.targetIds || null;
+  //   this.type = 'ActivatedAbility';
+  //   this.effect = effect || null;
+  // }
+
+  public changeSource(key: string, val: string): void {
     // Todo: pull object by ID from gameInstance, transform, validate/return
   }
 }

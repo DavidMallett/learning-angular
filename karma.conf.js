@@ -4,32 +4,18 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['mocha', '@angular/cli'],
+    frameworks: ['mocha'],
     plugins: [
       require('mocha'),
       require('chai'),
-      require('karma-jasmine'),
-      require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter'),
-      require('karma-coverage-istanbul-reporter'),
-      require('@angular/cli/plugins/karma'),
-      require('zone.js/dist/zone.js')
+      require('mocha-webpack')
     ],
     files: [
-      './**/*.spec.ts'
-      // 'node_modules/zone.js/dist/long-stack-trace-zone',
-      // 'node_modules/zone.js/dist/proxy.js',
-      // 'node_modules/zone.js/dist/sync-test',
-      // 'node_modules/zone.js/dist/jasmine-patch',
-      // 'node_modules/zone.js/dist/async-test',
-      // 'node_modules/zone.js/dist/fake-async-test'
+      '*.js',
+      '*.ts'
     ],
     client:{
-      clearContext: false // leave Jasmine Spec Runner output visible in browser
-    },
-    coverageIstanbulReporter: {
-      reports: [ 'html', 'lcovonly' ],
-      fixWebpackSourcePaths: true
+      reporter: 'html'
     },
     angularCli: {
       environment: 'dev'
@@ -40,6 +26,6 @@ module.exports = function (config) {
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['Chrome'],
-    singleRun: false
+    singleRun: true
   });
 };

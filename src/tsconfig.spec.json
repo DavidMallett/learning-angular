@@ -3,13 +3,7 @@
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
     "baseUrl": "./",
-    "module": "commonjs",
-    "types": [
-      "jasmine",
-      "node",
-      "chai",
-      "mocha"
-    ]
+    "module": "commonjs"
   },
   "files": [
     "test.ts"

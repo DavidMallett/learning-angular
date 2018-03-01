@@ -1,5 +1,5 @@
 import { TriggerResolver } from './triggerResolver';
-import { Trigger } from './trigger.interface';
+import { Trigger } from './trigger.class';
 
 export class Interpreter {
 

@@ -1,12 +1,15 @@
 import { Card } from './card';
 import { Deck } from './deck.component';
+import { Player } from './player';
 
 export class Hand {
 
+  public holder: Player;
   public cardsInHand: Array<Card>;
   public theDeck: Deck;
 
-  constructor() {
+  constructor(holder?: Player) {
+    this.holder = holder || null;
     this.cardsInHand = [];
   }
 

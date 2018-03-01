@@ -1,4 +1,5 @@
 import { browser, by, element } from 'protractor';
+import { expect, should } from 'chai';
 
 export class AppPage {
   navigateTo() {

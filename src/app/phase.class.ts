@@ -15,7 +15,7 @@ export class Phase {
     this.currentTurn.currentPhase = new Phase(thePhase);
   }
 
-  public phaseName(): string {
+  public name(): string {
     return this.currentPhase;
   }
 

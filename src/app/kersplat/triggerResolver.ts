@@ -5,6 +5,7 @@ import { Interpreter } from './interpreter.class';
 import { KeywordHandler } from './keywordhandler.class';
 import { TheStack } from '../core/theStack';
 import { Target } from '../models/target.interface';
+import { Source } from '../models/source';
 
 export class TriggerResolver {
 
@@ -13,7 +14,7 @@ export class TriggerResolver {
   }
 
   public static resolve(trigger: Trigger): void {
-    switch (trigger.target) { // should be target.targetType soon
+    switch (trigger.target.targetType) {
       case 'self':
         break;
       default:

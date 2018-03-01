@@ -1,8 +1,13 @@
 import { Trigger } from '../kersplat/trigger.class';
 import { Battlefield } from '../core/battlefield.class';
 import { GameInstance } from '../core/game-instance.class';
-import * as _ from 'lodash';
+import { TheStack } from '../core/theStack';
+import { Injectable } from '@angular/core';
 
+// import * as _ from 'lodash';
+const _ = require('lodash');
+
+@Injectable()
 export class TriggerHelperService {
 
   public onUpkeepTriggers: Array<Trigger>;
@@ -25,6 +30,38 @@ export class TriggerHelperService {
     _.each(t.effect, (eff: string, index: number) => {
       // todo: logic to apply the effect
     });
+  }
+
+  public stackTriggers(triggers: Array<Trigger>) {
+    _.each(triggers, (trig: Trigger, index: number) => {
+      TheStack.push(triggers.pop());
+    });
+  }
+
+  public registerTrigger(on: string, t: Trigger): void {
+    switch (on) {
+      case 'upkeep':
+        this.onUpkeepTriggers.push(t);
+        // register the trigger with the battlefield and/or gamestate
+        break;
+      case 'endStep':
+        this.onEndStepTriggers.push(t);
+        break;
+      case 'combat':
+        this.onCombatTriggers.push(t);
+        break;
+      case 'attack':
+        this.onAttackTriggers.push(t);
+        break;
+      case 'draw':
+        this.onDrawTriggers.push(t);
+        break;
+      case 'stateChange':
+        this.onStateChangeTriggers.push(t);
+        break;
+      default:
+        throw new Error('unrecognized target for trigger');
+    }
   }
 
 }

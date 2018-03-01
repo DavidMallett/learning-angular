@@ -10,7 +10,7 @@ const dismember = '{1}{B/P}{B/P}';
 describe('a spec to ensure that the parser is parsing stuff correctly', () => {
 
   it('should parse Cryptic Command', () => {
-    
+
   });
 
 });

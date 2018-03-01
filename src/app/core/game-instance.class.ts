@@ -21,7 +21,7 @@ export class GameInstance {
   public id: string;
   public players: Player[];
   public format: string;
-  public effects: Array<StaticEffect>;
+  public effects: Array<Modifier>;
   public objects: Permanent[];
   public battlefield: Battlefield;
   public activePlayer: Player;
@@ -53,6 +53,15 @@ export class GameInstance {
 
   public static bf(): Battlefield {
     return GameInstance.currentBattlefield;
+  }
+
+  public static activePlayer(): Player {
+    _.each(GameInstance.currentGameInstance.players, (player: Player, index: number) => {
+      if (player.isActivePlayer) {
+        return player;
+      }
+    });
+    throw new Error('active player not found or active player logic broken');
   }
 
   public end(): string {
@@ -137,7 +146,7 @@ export class GameInstance {
   //   }
   // }
 
-  public lookup(theId: string) {
+  public lookup(id: string) {
     // todo: write game instance to disk, then see if we can reload it
   }
 
@@ -161,6 +170,10 @@ export class GameInstance {
     // check for legend rule
     _.each(this.players, (player) => {
       player.applyLegendRule();
+    });
+
+    _.each(this.effects, (effect) => {
+      effect.checkExpiration();
     });
   }
 

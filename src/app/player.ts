@@ -65,6 +65,8 @@ export class Player {
     this.inMatch = this.game.match;
   }
 
+  // public static activePlayer
+
   public toString(): string {
     const toReturn = '------\nPlayer:\n';
     return toReturn.concat(
@@ -182,8 +184,8 @@ export class Player {
       // check for timing restrictions based on type
       if (card.type !== 'instant' &&
         _.indexOf(card.keywords, 'flash') < 0 &&
-        (this.game.phase.phaseName() !== 'firstMainPhase' ||
-          this.game.phase.phaseName() !== 'postCombatMainPhase')
+        (this.game.phase.name() !== 'firstMainPhase' ||
+          this.game.phase.name() !== 'postCombatMainPhase')
       ) {
         throw new Error('Cannot case sorcery-speed spells outside of the main phase');
       } else {
@@ -202,6 +204,10 @@ export class Player {
       this.priority.pass();
       // additional logic to check for triggers, pass priority, responses, etc
     }
+  }
+
+  public declareAttackers(arr: Array<Creature>): void {
+    // GameInstance.bf().
   }
 
   // public payMana(mana: string): Cost {
@@ -242,8 +248,8 @@ export class Player {
 
   public castCreature(card: Card): void {
     // validate timing restrictions
-    if (this.bf.phase !== 'firstMainPhase' &&
-      this.bf.phase !== 'postCombatMainPhase' &&
+    if (this.bf.phase.name() !== 'firstMainPhase' &&
+      this.bf.phase.name() !== 'postCombatMainPhase' &&
         card.keywords.indexOf('flash') < 0) {
           throw new Error('cannot cast creature spells without flash during this phase');
     } else {
@@ -259,8 +265,8 @@ export class Player {
   }
 
   public castArtifact(card: Card): void {
-    if (this.bf.phase !== 'firstMainPhase' &&
-      this.bf.phase !== 'postCombatMainPhase' &&
+    if (this.bf.phase.name() !== 'firstMainPhase' &&
+      this.bf.phase.name() !== 'postCombatMainPhase' &&
       card.keywords.indexOf('flash') < 0) {
         const artifact: Artifact = new Artifact(card);
         this.owns.push(artifact);

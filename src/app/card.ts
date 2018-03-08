@@ -3,6 +3,8 @@ import { Player } from './player';
 import { CardInterface } from './models/card.interface';
 import { CardInfoService } from './services/card-info.service';
 import { Zone } from './models/zone.class';
+import * as uuid from 'uuid';
+const uuidv4 = require('uuid/v4');
 const mtg = require('mtgsdk');
 const _ = require('lodash');
 const cis: CardInfoService = new CardInfoService();
@@ -55,6 +57,7 @@ export class Card implements CardInterface {
     this.name = name;
     this.keywords = [];
     const theCard: Card = cis.findCardByName(name);
+    this.uuid = uuidv4();
     _.create(this, theCard);
   }
 

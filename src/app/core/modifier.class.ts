@@ -1,6 +1,7 @@
 import { Target } from '../models/target.interface';
 import { Source } from '../models/source';
 import { GameInstance } from './game-instance.class';
+import { Spell, Instant, Sorcery } from '../core/spell.class';
 import { Permanent, Creature, Land, Planeswalker, Artifact, Enchantment } from './permanent.component';
 const theKeywords = require('../keywords.json').keywords;
 const _ = require('lodash');
@@ -64,6 +65,10 @@ export class Modifier {
   public applyToPermanent(perm: Permanent): void {
     // todo: logic to apply the modifier to a permanent, player, or spell
     perm.addModifier(this);
+  }
+
+  public applyToSpell(sp: Spell): void {
+    sp.addModifier(this);
   }
 
 }

@@ -3,6 +3,7 @@ import { Battlefield } from '../core/battlefield.class';
 import { GameInstance } from '../core/game-instance.class';
 import { TheStack } from '../core/theStack';
 import { Injectable } from '@angular/core';
+import { Condition } from '../models/condition.interface';
 
 // import * as _ from 'lodash';
 const _ = require('lodash');
@@ -35,6 +36,15 @@ export class TriggerHelperService {
   public stackTriggers(triggers: Array<Trigger>) {
     _.each(triggers, (trig: Trigger, index: number) => {
       TheStack.push(triggers.pop());
+    });
+  }
+
+  public checkCondition(obj: any, event: string): void {
+    // see if an event occurring to an object causes an ability to trigger
+    _.each(this.onStateChangeTriggers, (trigger: Trigger, index: number) => {
+      if (trigger.checkEvent(event)) {
+        TriggerHelperService.execute(trigger);
+      }
     });
   }
 

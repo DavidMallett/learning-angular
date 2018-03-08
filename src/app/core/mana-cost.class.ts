@@ -82,6 +82,9 @@ export class ManaCost {
     return result;
   }
 
+  public canBeCastBy(pool: Array<Array<string>>): boolean {
+    
+  }
 
   public floatingMana(mc: ManaCost): void {
     // don't remember what I was trying to do here...

@@ -14,10 +14,13 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts?$/,
         exclude: [/node_modules/, /dist/],
         loader: 'ts-loader'
       }
+    ],
+    rules: [
+      { test: /\.ts$/, use: 'ts-loader' }
     ]
   }
 };

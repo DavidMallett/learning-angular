@@ -5,10 +5,19 @@ import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { Logger } from '../util/logger.util';
 import { Modifier } from './modifier.class';
 import { Trigger } from '../kersplat/trigger.class';
+import { GameInstance } from './game-instance.class';
+import { Battlefield } from './battlefield.class';
+import { TriggerHelperService } from '../services/trigger-helper.service';
+import { CardInfoService } from '../services/card-info.service';
+import { InfoService } from '../services/info-service';
+import { Condition } from '../models/condition.interface';
 import * as uuid from 'uuid';
 
 const _ = require('lodash');
 const uuidv4 = require('uuid/v4');
+const ths = new TriggerHelperService();
+const ifs = new InfoService();
+const cis = new CardInfoService();
 
 export class Permanent {
   // required
@@ -43,7 +52,7 @@ export class Permanent {
   public triggers?: Array<Trigger>;
 
   public constructor(card: Card) {
-    this.uuid = uuidv4();
+    this.uuid = card.uuid;
     this.type = card.type;
     this.name = card.name;
     this.cmc = card.cmc;
@@ -67,6 +76,10 @@ export class Permanent {
 
   }
 
+  public card(): Card {
+    return cis.findCardByName(this.name);
+  }
+
   public tap(): void {
     if (this.tapped) {
       throw new Error('permanent ' + this.name + ' is already tapped');
@@ -83,10 +96,19 @@ export class Permanent {
     }
   }
 
+  public activate(abil: ActivatedAbility): void {
+    // todo: validate that the permanent has the ability they're activating
+    // player still has to pay the cost
+    this.controller.payCost(abil.cost, abil.source);
+  }
+
   public die(): void {
   // to 'die' is to be put into the graveyard from the battlefield
     if (this.zone === 'battlefield') {
       this.zone = 'graveyard';
+      ths.checkCondition(this, 'died');
+      this.owner.yard.push(this.card());
+
     } else {
       throw new Error('permanent not on the battlefield cannot die');
     }
@@ -94,6 +116,9 @@ export class Permanent {
 
   public exile(): void {
     this.zone = 'exile';
+    GameInstance.bf().remove(this);
+    GameInstance.game().exile(this);
+    ths.checkCondition(this, 'leftBattlefield');
   }
 
   public addModifier(mod: Modifier): void {
@@ -130,6 +155,8 @@ export class Creature extends Permanent {
   public isArtifactCreature: boolean;
   public subtype: string;
   public damage: number;
+  public threatModifier?: number;
+  public threatFactor?: number;
 
   public constructor(card: Card) {
     super(card);
@@ -137,6 +164,8 @@ export class Creature extends Permanent {
     this.toughness = card.toughness;
     this.subtype = card.subtype;
     this.damage = 0;
+    this.threatModifier = 0;
+    this.threatFactor = 1;
   }
 
   public static convert(perm: Permanent): Creature {
@@ -151,6 +180,40 @@ export class Creature extends Permanent {
       'subtype': perm.subtype
     };
     return new Creature(theCreatureCard);
+  }
+
+  // intended for use with tokens, for instance
+  public static createToken(details: any): Creature {
+    const theToken: Card = {
+      'name': details.name,
+      'types': details.types,
+      'type': _.concat(details.types, ' '),
+      'supertype': 'token',
+      'cmc': details.cmc || 0,
+      'owner': details.owner,
+      'power': details.power,
+      'toughness': details.toughness,
+      'subtype': details.subtype
+    };
+    return new Creature(theToken);
+  }
+
+  public threatLevel(): number {
+    let result = 0;
+    result += this.power;
+    result += this.keywords.length;
+    this.hasStateBasedEffect ? result += 5 : result += 0;
+    result += (this.abilities.length * 2);
+    result += this.threatModifier;
+    return result;
+  }
+
+  public incrementThreat(by: number): void {
+    this.threatModifier += by;
+  }
+
+  public multiplyThreat(by: number): void {
+    this.threatFactor *= by;
   }
 
 }

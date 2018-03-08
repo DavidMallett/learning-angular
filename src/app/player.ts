@@ -14,10 +14,15 @@ import { Cost } from './kersplat/cost.class';
 import { Parser } from './util/parser.util';
 import { ManaCost } from './core/mana-cost.class';
 import { TriggerHelperService } from './services/trigger-helper.service';
+import { InfoService } from './services/info-service';
+import { Trigger } from './kersplat/trigger.class';
+import { Condition } from './models/condition.interface';
 
 import * as uuid from 'uuid';
+import { KnownInformation } from './models/known-info.class';
 const _ = require('lodash');
 const parser = new Parser();
+const ifs = new InfoService();
 
 const uuidv4 = require('uuid/v4');
 
@@ -43,6 +48,7 @@ export class Player {
   public gameScore?: number;
   public game?: GameInstance; // or Game
   public inMatch?: Match;
+  public knownInfo: KnownInformation;
 
   public constructor(name: string, deck: Deck) {
     this.startingLife = 20;
@@ -61,6 +67,7 @@ export class Player {
     this.gameScore = 0;
     this.hasPriority = false;
     this.priority = new Priority(this, this.opponent);
+    this.knownInfo = new KnownInformation();
     this.game = GameInstance.game();
     this.inMatch = this.game.match;
   }
@@ -83,6 +90,44 @@ export class Player {
     const newCard: Card = this.deck.draw();
     // newCard.uuid = uuidv4();
     this.hand.add(newCard);
+  }
+
+  // todo: account for 'reveal' occasionally being used as a cost
+  public reveal(card: Card): void {
+    ifs.seeOpponentCard(card.name);
+  }
+
+  public tap(perm: Permanent): void {
+    if (perm.controller === this) {
+      perm.tap();
+    }
+  }
+
+  public chill(): void {
+    // literally do nothing
+  }
+
+  public discard(card: Card): void {
+    // todo: validate that the card is in hand
+    this.hand.discard(card);
+  }
+
+  public payCost(cost: Cost, tapper?: Permanent): void {
+    cost.tap ? this.payTapCost(tapper) : this.chill();
+    
+
+  }
+
+  public payTapCost(perm: Permanent): void {
+    perm.tap();
+  }
+
+  public life(): number {
+    return this.currentLife;
+  }
+
+  public hasLethalOnBoard(opp: Player): boolean {
+    return (this.currentLife < ifs.totalPowerOnBoard(opp));
   }
 
   public untapAll(): void {

@@ -38,4 +38,38 @@ export class DeckBuilderService {
     });
   }
 
+  public readDeckFromJson(name: string, path: string): Deck {
+    const json = require(path);
+    const result: Deck = new Deck([], name);
+    // const creatures = json.creatures || {};
+    // const lands = json.lands || {};
+    // const instants = json.instants || {};
+    // const sorceries = json.sorceries || {};
+    // const spells = json.spells || {};
+    // const artifacts = json.artifacts || {};
+    // const enchantments = json.enchantments || {};
+    // const pw = json.planeswalkers || {};
+
+    this.addCardsToDeck(json.creatures, result);
+    this.addCardsToDeck(json.lands, result);
+    this.addCardsToDeck(json.instants, result);
+    this.addCardsToDeck(json.sorceries, result);
+    this.addCardsToDeck(json.spells, result);
+    this.addCardsToDeck(json.artifacts, result);
+    this.addCardsToDeck(json.enchantments, result);
+    this.addCardsToDeck(json.planeswalkers, result);
+
+    return result;
+  }
+
+  public addCardsToDeck(cards: any, deck: Deck): void {
+    if (!(cards === {} || cards === null || cards === undefined)) {
+      _.each(cards, (quant: number, key: string) => {
+        for (let i = 0; i < quant; i++) {
+          deck.addCard(cis.findCardByName(key));
+        }
+      });
+    }
+  }
+
 }

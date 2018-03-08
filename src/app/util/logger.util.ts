@@ -1,6 +1,9 @@
+import { Injectable } from '@angular/core';
+
 const fs = require('fs');
 const _ = require('lodash');
 
+@Injectable()
 export class Logger {
   public static globalLogs: Array<string>;
   public logs: Array<string>;

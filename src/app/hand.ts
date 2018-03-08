@@ -1,6 +1,12 @@
 import { Card } from './card';
 import { Deck } from './deck.component';
 import { Player } from './player';
+import { GameInstance } from './core/game-instance.class';
+import { Graveyard } from './core/graveyard.component';
+import { Battlefield } from './core/battlefield.class';
+import { Oper } from './util/oper.class';
+
+const oper = new Oper();
 
 export class Hand {
 
@@ -19,6 +25,12 @@ export class Hand {
 
   public add(card: Card): void {
     this.cardsInHand.push(card);
+  }
+
+  public discard(card: Card): void {
+    // this.holder.yard.push(this.cardsInHand.splice(this.cardsInHand.indexOf(card), 1)[0]);
+    // alternate way to do this:
+    this.holder.yard.push(oper.removeFirst(this.cardsInHand, card));
   }
 
   public remove(card: Card): Card {

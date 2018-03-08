@@ -15,6 +15,30 @@ export class Parser {
     // no properties
   }
 
+  public parseCostDescriptor(desc: string, theCost: Cost): Cost {
+    const descArray: Array<string> = desc.split(':');
+    // costs can be written as colon-separated strings and this method should parse them back into a Cost
+    // i.e. "mana:3{U}{B}:life:2:cards:1"
+    // let currentOp = 'starting';
+    _.each(descArray, (str: string, index: number) => {
+      // current idea: don't worry about when the iterator lands on the blocks of mana or numbers;
+      // only perform actions when running into a keyword
+      switch (str) {
+        case 'mana':
+          this.parseManaCost(descArray[index + 1]);
+          break;
+        case 'life':
+          // todo: finish this
+          break;
+        case 'cards':
+          // stuff here
+          break;
+      }
+    });
+
+    return theCost;
+  }
+
   public parseManaCost(mana: string): ManaCost {
     let tokens: Array<string> = [];
     if (mana.indexOf('{') > 0 || mana.indexOf('}') > 0) {

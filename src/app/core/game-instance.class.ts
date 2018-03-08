@@ -7,7 +7,9 @@ import { Logger } from '../util/logger.util';
 import { Zone } from '../models/zone.class';
 import { Match } from '../models/match';
 import { Phase } from '../phase.class';
+import { Card } from '../card';
 import { Modifier } from './modifier.class';
+import { TriggerHelperService } from '../services/trigger-helper.service';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 const fs = require('fs');
@@ -17,12 +19,14 @@ const uuidv4 = require('uuid/v4');
 export class GameInstance {
   public static currentGameInstance: GameInstance;
   public static currentBattlefield: Battlefield;
+  public ths: TriggerHelperService;
   public gameNumber: number;
   public id: string;
-  public players: Player[];
+  public players: Array<Player>;
   public format: string;
   public effects: Array<Modifier>;
-  public objects: Permanent[];
+  public objects: Array<Permanent>;
+  public cardsInExile: Array<Card>;
   public battlefield: Battlefield;
   public activePlayer: Player;
   public zones: Array<Zone>;
@@ -32,6 +36,7 @@ export class GameInstance {
   public turns: Array<Turn>;
 
   constructor(format: string, players: Player[]) {
+    this.ths = new TriggerHelperService();
     this.format = format;
     this.id = uuidv4();
     this.objects = [];
@@ -41,6 +46,7 @@ export class GameInstance {
     this.battlefield = new Battlefield(this.id);
     this.turn = new Turn(players[0], players[1]);
     this.turns.push(this.turn);
+    this.cardsInExile = [];
     GameInstance.currentBattlefield = this.battlefield;
     fs.appendFile('currentGameInstance.txt', this.toString(), (err) => {
       if (err) { throw err; }
@@ -62,6 +68,15 @@ export class GameInstance {
       }
     });
     throw new Error('active player not found or active player logic broken');
+  }
+
+  public exile(perm: Permanent): void {
+    this.cardsInExile.push(
+      _.remove(this.objects, (obj: Permanent, i: number) => {
+        return obj.uuid === perm.uuid;
+      }));
+
+    this.ths.checkCondition(perm, 'leftBattlefield');
   }
 
   public end(): string {

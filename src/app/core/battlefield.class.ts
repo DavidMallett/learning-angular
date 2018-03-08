@@ -8,6 +8,7 @@ import { Zone } from '../models/zone.class';
 import { Match } from '../models/match';
 import { Trigger } from '../kersplat/trigger.class';
 import { TriggerHelperService } from '../services/trigger-helper.service';
+import { Condition } from '../models/condition.interface';
 import { Source } from '../models/source';
 import { StaticEffect } from '../kersplat/static-effect.class';
 import { CombatController } from './combat/combatController';
@@ -19,6 +20,7 @@ const thePhases = require('../phases.json');
 const uuidv4 = require('uuid/v4');
 
 export class Battlefield {
+  public permanents: Array<Permanent>;
   public creatures: Creature[];
   public lands: Land[];
   public artifacts: Artifact[];
@@ -34,6 +36,7 @@ export class Battlefield {
 
   public constructor(instance: string) {
     this.logger = new Logger();
+    this.permanents = [];
     this.creatures = [];
     this.lands = [];
     this.artifacts = [];

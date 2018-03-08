@@ -1,6 +1,12 @@
 # LearningAngular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.6.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.6. (and consequently this project is filled with a ton of boilerplate code)
+
+# What's This?
+
+I started a project to learn Angular. I thought that a fun way to learn how to do front-end/full-stack development would be to teach a computer how to play Magic: The Gathering. My goal is to learn as much Angular as possible by trying every aspect of app development in an environment where it's largely irrelevant whether or not it works (unlike the other work I do on internal enterprise apps). As you can see, we're a long way off from having a working app.
+
+In case it isn't clear: I do not intend to make any money off of this; it is open-source (and in any case I neither own nor created Magic: the Gathering). Just using the game as the basis for an experiment in learning Angular.
 
 ## Development server
 

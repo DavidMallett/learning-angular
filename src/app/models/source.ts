@@ -1,3 +1,5 @@
+import { Permanent, Creature, Artifact, Enchantment, Planeswalker, Land } from '../core/permanent.component';
+import { Card } from '../card';
 
 export class Source {
 
@@ -10,4 +12,11 @@ export class Source {
     this.reference = ref;
     this.id = ref.id;
   }
+
+  public card(): Card {
+    if (this.reference instanceof Permanent) {
+      return this.reference.card();
+    }
+  }
+
 }

@@ -1,5 +1,8 @@
 import { Card } from '../card';
 import { CardInterface } from '../models/card.interface';
+import { Permanent, Creature, Planeswalker } from '../core/permanent.component';
+import { GameInstance } from '../core/game-instance.class';
+import { Battlefield } from '../core/battlefield.class';
 import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { Logger } from '../util/logger.util';
@@ -49,6 +52,22 @@ export class Spell {
 
   }
 
+  public addModifier(mod: Modifier): void {
+    this.modifiers.push(mod);
+  }
+
+  public damage(target: Target, amount: number): void {
+    if (target.reference instanceof Creature) {
+      target.reference.damage += amount;
+    } else if (target.reference instanceof Planeswalker) {
+      target.reference.loyalty -= amount;
+    } else if (target.reference instanceof Player) {
+      target.reference.currentLife -= amount;
+    } else {
+      throw new Error('spells cannot deal damage other than to players, creatures, and Planeswalkers');
+    }
+    GameInstance.bf().applyStateBasedActions();
+  }
 
 }
 

@@ -22,6 +22,11 @@ export class Deck implements DeckInterface {
     this.isShuffled = true;
   }
 
+  public addCard(card: Card): void {
+    // used when building a deck
+    this.library.push(card);
+  }
+
   public tutor(cardName: string): Card {
     return _.find(this.library, (cards) => {
       return cards.name === cardName;

@@ -16,6 +16,11 @@ export class Graveyard {
     this.cards = [];
   }
 
+  // put a card in the graveyard
+  public push(card: Card): void {
+    this.cards.push(card);
+  }
+
   public toString(): string {
     let resultStr = '------\nGRAVEYARD:\n';
     _.each(this.cards, (c: Card) => {

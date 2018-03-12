@@ -1,6 +1,6 @@
 import { Hand } from './hand';
 import { Card } from './card';
-import { Permanent, Creature, Land, Artifact, Enchantment } from './core/permanent.component';
+import { Permanent, Creature, Land, Artifact, Enchantment, Planeswalker } from './core/permanent.component';
 import { Deck } from './deck.component';
 import { Battlefield } from './core/battlefield.class';
 import { Graveyard } from './core/graveyard.component';
@@ -112,9 +112,20 @@ export class Player {
     this.hand.discard(card);
   }
 
+  public getCreatures(): Array<Creature> {
+    // returns creatures that this player controls
+    const arr: Array<Creature> = [];
+    _.each(this.controls, (perm: Permanent, index: number) => {
+      if (perm.type === 'creature' || perm instanceof Creature) {
+        arr.push(<Creature>perm);
+      }
+    });
+    return arr;
+  }
+
   public payCost(cost: Cost, tapper?: Permanent): void {
     cost.tap ? this.payTapCost(tapper) : this.chill();
-    
+    //
 
   }
 
@@ -239,7 +250,8 @@ export class Player {
         const theCost: Cost = {
           'manaCost': parser.parseTokenArray(parser.convertCostStringToTokenArray(card.manaCost)),
           'tap': false,
-          'additionalCosts': card.additionalCosts || []
+          'additionalCosts': card.additionalCosts || [],
+          'paid': false
         };
         ManaCost.subtract(this.manaPool, theCost.manaCost);
       }

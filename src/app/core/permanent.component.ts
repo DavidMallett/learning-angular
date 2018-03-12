@@ -11,6 +11,7 @@ import { TriggerHelperService } from '../services/trigger-helper.service';
 import { CardInfoService } from '../services/card-info.service';
 import { InfoService } from '../services/info-service';
 import { Condition } from '../models/condition.interface';
+import { Zone } from '../models/zone.class';
 import * as uuid from 'uuid';
 
 const _ = require('lodash');
@@ -25,7 +26,7 @@ export class Permanent {
   public type: string;
   public name: string;
   public cmc: number;
-  public zone: string;
+  public zone: Zone;
   public owner: Player;
   public controller: Player;
   public keywords: Array<string>;
@@ -69,7 +70,7 @@ export class Permanent {
     this.hasStateBasedEffect = (card.hasStateBasedEffect ? true : false);
     this.hasEtbEffect = (card.hasEtbEffect ? true : false);
     this.modifiers = [];
-    this.zone = 'battlefield';
+    this.zone.name = 'battlefield';
     this.tapped = false;
 
     // todo: add logic for owner and controller

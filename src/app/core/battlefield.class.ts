@@ -71,6 +71,10 @@ export class Battlefield {
     return resultStr;
   }
 
+  public changeZone(perm: Permanent, zone: Zone): void {
+    perm.zone.name = zone.name;
+  }
+
   public toNextPhase(): void {
     if (this.validateEmptyStack()) {
       this.phase.advancePhase();
@@ -168,25 +172,32 @@ export class Battlefield {
     }
   }
 
-  public register(perm: Permanent): string {
-    switch (perm.type) {
-      case 'creature':
-        this.registerCreature(Creature.convert(perm));
-        return perm.uuid;
-      case 'land':
-        this.registerLand(Land.convert(perm));
-        return perm.uuid;
-      case 'artifact':
-        this.registerArtifact(perm);
-        return perm.uuid;
-      case 'enchantment':
-        this.registerEnchantment(perm);
-        return perm.uuid;
-      case 'planeswalker':
-        this.registerPlaneswalker(Planeswalker.convert(perm));
-        return perm.uuid;
-      default:
-        throw new Error('Error: ' + perm.type + ' is not a permanent type');
+  public register(perm: any): string {
+    if (perm.type) {
+      switch (perm.type) {
+        case 'creature':
+          this.registerCreature(Creature.convert(perm));
+          return perm.uuid;
+        case 'land':
+          this.registerLand(Land.convert(perm));
+          return perm.uuid;
+        case 'artifact':
+          this.registerArtifact(perm);
+          return perm.uuid;
+        case 'enchantment':
+          this.registerEnchantment(perm);
+          return perm.uuid;
+        case 'planeswalker':
+          this.registerPlaneswalker(Planeswalker.convert(perm));
+          return perm.uuid;
+        default:
+          throw new Error('Error: ' + perm.type + ' is not a permanent type');
+      }
+    }
+    if (perm instanceof StaticEffect) {
+      this.registerFieldEffect(perm);
+    } else {
+      return 'cannot register unrecognized type - modify battlefield.register(perm) to rectify this';
     }
   }
 

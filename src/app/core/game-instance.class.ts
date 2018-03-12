@@ -13,7 +13,7 @@ import { TriggerHelperService } from '../services/trigger-helper.service';
 import * as uuid from 'uuid';
 const _ = require('lodash');
 const fs = require('fs');
-
+const ths = new TriggerHelperService();
 const uuidv4 = require('uuid/v4');
 
 export class GameInstance {
@@ -36,7 +36,8 @@ export class GameInstance {
   public turns: Array<Turn>;
 
   constructor(format: string, players: Player[]) {
-    this.ths = new TriggerHelperService();
+    // this.ths = new TriggerHelperService();
+    // ^^ todo before deletion: find out if it's better to instantiate this for each instance of a class, or globally
     this.format = format;
     this.id = uuidv4();
     this.objects = [];
@@ -70,13 +71,25 @@ export class GameInstance {
     throw new Error('active player not found or active player logic broken');
   }
 
-  public exile(perm: Permanent): void {
-    this.cardsInExile.push(
-      _.remove(this.objects, (obj: Permanent, i: number) => {
-        return obj.uuid === perm.uuid;
-      }));
+  // since "exile" means "remove from the game" this is a method of the gameInstance
+  public exile(perm: any): void {
+    // todo: should be able to exile anything, not just permanents
+    if (perm instanceof Permanent) {
+      this.cardsInExile.push(
+        _.remove(this.objects, (obj: Permanent, i: number) => {
+          return obj.uuid === perm.uuid;
+        }));
 
-    this.ths.checkCondition(perm, 'leftBattlefield');
+      this.battlefield.remove(perm);
+
+      ths.checkCondition(perm, 'leftBattlefield');
+    }
+    if (perm instanceof Card) {
+      // whatever is exiling the card should pull card from its current zone
+      this.cardsInExile.push(perm);
+    }
+    perm.zone.name = 'exile';
+
   }
 
   public end(): string {
@@ -195,6 +208,13 @@ export class GameInstance {
   // public applyDamageToObject(objectId: string, amount: number): void {
 
   // }
+
+  public toDetailedString(): string {
+    const currentPlayers = this.players.toString();
+    const field = this.battlefield.permanents.toString();
+    return _.concat(currentPlayers, field, '\n\n\n\n');
+  }
+
 }
 
 /*

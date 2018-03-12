@@ -28,10 +28,10 @@ export class Parser {
           this.parseManaCost(descArray[index + 1]);
           break;
         case 'life':
-          // todo: finish this
+          theCost.lifeCost += parseInt(descArray[index + 1], 10);
           break;
         case 'cards':
-          // stuff here
+          theCost.discardCost += parseInt(descArray[index + 1], 10);
           break;
       }
     });
@@ -53,7 +53,7 @@ export class Parser {
 
   public convertCostStringToTokenArray(mc: string): Array<string> {
     // case 1: {1}{U}{U}{U}
-
+    // note: if there are no brackets, use parseManaCost instead
     const arr: Array<string> = mc.split('');
     let makingToken = false;
     let current = '';

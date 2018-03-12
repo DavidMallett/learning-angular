@@ -65,4 +65,24 @@ export class Phase {
     }
   }
 
+  public isMainPhase(): boolean {
+    return this.currentPhase === 'firstMainPhase' || this.currentPhase === 'postCombatMainPhase';
+    // if false, cannot use sorcery speed stuff
+  }
+
+  public isBeforeCombat(): boolean {
+    switch (this.currentPhase) {
+      case 'untap':
+        return true;
+      case 'upkeep':
+        return true;
+      case 'drawStep':
+        return true;
+      case 'firstMainPhase':
+        return true;
+      default:
+        return false;
+    }
+  }
+
 }

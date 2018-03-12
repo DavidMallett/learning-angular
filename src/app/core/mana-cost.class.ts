@@ -55,6 +55,37 @@ export class ManaCost {
     // that's all; this is a check to ensure that more mana wasn't deducted than was in the mana pool
   }
 
+  public converted(): number {
+    // returns the CMC of a manaCost
+    return this.genericCost +
+      this.colorlessCost +
+      this.whiteCost +
+      this.blackCost +
+      this.greenCost +
+      this.blueCost +
+      this.redCost;
+  }
+
+  // simple reusable method to reduce generic requirement by 1
+  public reduce(): void {
+    this.genericCost < 1 ? this.genericCost = 0 : this.genericCost -= 1;
+  }
+
+  public toSymbols(): Array<string> {
+    // account for case in which genericCost is 2 digits
+
+    // let symbols = this.toString().split('');
+
+    if (this.genericCost > 9) {
+      const symbols = _.drop(this.toString().split(''), 2);
+      symbols.unshift(this.genericCost.toString());
+      return this.symbols = symbols;
+    } else {
+      return this.symbols = this.toString().split('');
+    }
+
+  }
+
   public toString(): string {
     let result = '';
     if (this.genericCost > 0) {
@@ -83,7 +114,33 @@ export class ManaCost {
   }
 
   public canBeCastBy(pool: Array<Array<string>>): boolean {
-    
+    // todo: come up with a better way to write this method
+    // perhaps using recursion?
+    const symbols: Array<string> = this.toSymbols();
+    const poolSymbols: Array<string> = [];
+    // if (this.converted() > pool.
+    _.each(symbols, (char: string, index: number) => {
+      _.each(pool, (land: Array<string>, index2: number) => {
+        // remember how the pool looks. If I have Adarkar Wastes, Swamp, and City of Brass then pool is:
+        // [ [C, U, W], [B], [U, W, B, R, G] ]
+        // note to self: we have to account for stuff like Ancient Tomb that produces CC...
+
+        // initial (seemingly not great) idea:
+        // iterate through pool and make a list of all possible combinations of mana that can be made
+        // then check to see if this.toSymbols is in the array of possible results
+
+        // second idea: count the number of each symbol in this.symbols
+        // then, count the number of each symbol in the pool.
+        if (land.includes(char)) {
+          poolSymbols.push(pool.splice(index2, 1, [''])[0][land.indexOf(char)]);
+        }
+
+        // _.each(land, (mana: string, index2: number)q
+      });
+    });
+
+    return poolSymbols === symbols;
+
   }
 
   public floatingMana(mc: ManaCost): void {

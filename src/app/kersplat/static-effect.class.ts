@@ -9,14 +9,14 @@ interface Condition {
 export class StaticEffect {
 
   public endsAt: string;
-  public effect: string;
+  public effect: void;
   public target: Target;
   public condition: Condition; // todo: consider writing Condition class
 
-  constructor(eff: string, tar: Target, until: string) {
-    this.effect = eff;
-    this.target = tar;
-    this.endsAt = until;
+  constructor(eff?: void, tar?: Target, until?: string) {
+    this.effect = eff || null;
+    this.target = tar || null;
+    this.endsAt = until || 'never';
   }
 
   public evaluateCondition(): void {

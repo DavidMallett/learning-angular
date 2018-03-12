@@ -12,7 +12,7 @@ export class ThreatLevel {
   //   this.level = level;
   // }
 
-  public constructor(object: any) {
+  public constructor(object?: any) {
     this.level = 0;
     if (object.power) {
       this.level += object.power;

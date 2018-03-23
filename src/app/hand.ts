@@ -1,21 +1,21 @@
 import { Card } from './card';
 import { Deck } from './deck.component';
-import { Player } from './player';
+// import { Player } from './player';
 import { GameInstance } from './core/game-instance.class';
 import { Graveyard } from './core/graveyard.component';
-import { Battlefield } from './core/battlefield.class';
+// import { Battlefield } from './core/battlefield.class';
 import { Oper } from './util/oper.class';
 
 const oper = new Oper();
 
 export class Hand {
 
-  public holder: Player;
+  // public holder: Player;
   public cardsInHand: Array<Card>;
   public theDeck: Deck;
 
-  constructor(holder?: Player) {
-    this.holder = holder || null;
+  constructor() {
+    // this.holder = holder || null;
     this.cardsInHand = [];
   }
 
@@ -27,11 +27,12 @@ export class Hand {
     this.cardsInHand.push(card);
   }
 
-  public discard(card: Card): void {
+  // vvv this should be in the Player class
+  // public discard(card: Card): void {
     // this.holder.yard.push(this.cardsInHand.splice(this.cardsInHand.indexOf(card), 1)[0]);
     // alternate way to do this:
-    this.holder.yard.push(oper.removeFirst(this.cardsInHand, card));
-  }
+    // this.holder.yard.push(oper.removeFirst(this.cardsInHand, card));
+  // }
 
   public remove(card: Card): Card {
     this.cardsInHand.filter((currentValue: Card) => {

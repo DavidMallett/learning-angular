@@ -1,4 +1,7 @@
 IN GAME OBJECTS
+
+IMPORTANT NOTE: We DO NOT NEED 2 way data binding on every object. In fact, most objects should only import their dependencies, not their dependents
+
 (reorganizing the folder structure of the repo)
 PROPOSED FUTURE STRUCTURE:
 
@@ -173,3 +176,102 @@ DecisionTreeService
   public findGoldfishTree(tree: DT): DT // returns a tree in which we make linear plays and don't interact at all with the opponent (AKA "Goldfishing"). Nothing is played around and for fair decks this is otherwise the same as findBestDamageTree. Use for Dredge, Merfolk, Storm, and other decks that don't really care about what the opponent is doing
 
   public addChild(tree: DT): void // maybe  
+
+Note: V2 will probably go into a new repo so I don't have to mess with telling tsconfig which dirs to compile and which to ignore
+
+3/15/18 Proposal for new data structure:
+(V2 Refactor)
+/Core/
+  /AI/
+    DecisionTree
+  /Card/
+    Card
+    CreatureCard
+    NonCreatureCard
+    Spell
+    CreatureSpell
+    <Permanent>Spell
+    Instant
+    Sorcery
+  /Mechanics/
+    GameInstance
+    ostensibly, additional helper classes around modifying objects
+    Turn
+    Phase
+    --> idea: Turn should have all 12 phases; the triggerHelperService can, at the beginning of each turn, register triggers on each phase change as is appropriate
+    Player
+    TheStack
+    Game(?)
+    Match
+  /Zones/
+    Zone
+    Battlefield
+    Graveyard
+    Hand
+    Deck
+    Exile
+  /Tangibles/
+    Permanent
+    Creature
+    Artifact
+    Enchantment
+    Planeswalker
+    Land
+    ActivatedAbility
+    ManaAbility
+  /Intangibles/
+    Cost
+    ManaCost
+    Priority
+    Emblem
+    Modifier
+    TriggeredAbility
+    StaticEffect
+    Trigger
+    Condition
+    Source
+    Target
+  /Analytics/
+    DeckStats
+    ThreatLevel
+    KnownInfo
+  /Tools/
+    TriggerResolver
+    BoardState
+    Util
+    Parser
+    Oper
+  /Services/
+    InfoService
+    DecisionHelperService
+    etc
+/Prototype/
+  /cards/
+    /creatures/
+      DeathShadow
+      SnapcasterMage
+      TasigurGoldenFang
+      GurmagAngler
+      StreetWraith
+    /instants/
+      StubbornDenial
+      Opt
+    /sorceries/
+      Thoughtseize
+      InquisitionKozilek
+      SerumVisions
+    /land/
+      Island
+      Swamp
+      Steam Vents
+      Watery Grave
+      Blood Crypt
+      Bloodstained Mire
+      Polluted Delta
+      Scalding Tarn
+/DeckBuilder/
+
+
+To be clear, we MUST NOT HAVE circular dependencies.
+
+Each class 

@@ -1,8 +1,4 @@
 import { Permanent, Creature, Land, Artifact, Enchantment, Planeswalker } from './permanent.component';
-import { TheStack } from './theStack';
-import { GameInstance } from './game-instance.class';
-import { Phase } from '../phase.class';
-import { Logger } from '../util/logger.util';
 import { Player } from '../player';
 import { Card } from '../card';
 import { Zone } from '../models/zone.class';
@@ -18,6 +14,15 @@ export class Graveyard extends Zone {
     super(name);
     this.cards = [];
     this.name = name;
+  }
+
+  public contains(card: Card): boolean {
+    _.each(this.cards, (yardCard: Card, index: number) => {
+      if (yardCard.name === card.name) {
+        return true;
+      }
+    });
+    return false;
   }
 
   // put a card in the graveyard

@@ -8,6 +8,8 @@ I started a project to learn Angular. I thought that a fun way to learn how to d
 
 In case it isn't clear: I do not intend to make any money off of this; it is open-source (and in any case I neither own nor created Magic: the Gathering). Just using the game as the basis for an experiment in learning Angular.
 
+Current project status: I got it to compile but ran into a bunch of circular dependency problems due to my inexperience with dependency injection / architecting a project of this magnitude; hence, the /v2/ folder will contain "sanitized" versions of classes which don't reference each other. You can see my proposed layout for v2 in the "class-schema.md" file.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

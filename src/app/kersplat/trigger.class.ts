@@ -1,5 +1,5 @@
 import { Modifier } from '../core/modifier.class';
-import { TheStack } from '../core/theStack';
+// import { TheStack } from '../core/theStack';
 import { Logger } from '../util/logger.util';
 import { TriggerHelperService } from '../services/trigger-helper.service';
 import { Target } from '../models/target.interface';
@@ -31,13 +31,13 @@ export class Trigger {
     const newTrigger: Trigger = new Trigger(name);
     newTrigger.source = source;
     newTrigger.setProps(mod);
-    TheStack.push(newTrigger);
+    // TheStack.push(newTrigger); // << this should be in another class
     Logger.gLog('trigger ' + name + ' put on the stack');
     // todo: make this return a reference to the new Trigger
   }
 
   // check all conditions of a single trigger based on an event
-  public checkEvent(event: string): boolean {
+  public checkEvent(event: string, source?: Source): boolean {
     _.each(this.conditions, (cond: Condition, index: number) => {
       if (!cond.checkEvent(event)) {
         return false;

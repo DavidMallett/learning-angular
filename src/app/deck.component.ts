@@ -1,6 +1,6 @@
 import { Card } from './card';
 import { DeckInterface } from './models/deck.interface';
-import { Player } from './player';
+// import { Player } from './player';
 const _ = require('lodash');
 
 export class Deck implements DeckInterface {
@@ -10,7 +10,7 @@ export class Deck implements DeckInterface {
   public format: string;
   public cardsLeft: number;
   public isShuffled: boolean;
-  public owner: Player;
+  // public owner: Player;
 
   constructor(lib: Array<Card>, name: string) {
     this.library = lib;
@@ -32,10 +32,44 @@ export class Deck implements DeckInterface {
   public mill(n: number): void {
     // deliberate for loop
     for (let i = 0; i < n; i++) {
-      this.owner.yard.push(this.library.pop());
-      // todo: edit zone information on the cards perhaps?
+      const c: Card = this.library.pop();
+      // this method should be in the Player class
+      // this.owner.yard.push(c);
+      c.zone.name = 'graveyard';
     }
   }
+
+  public lookAt(topX: number): Array<Card> {
+    // deliberate for loop
+    const arr: Array<Card> = [];
+    for (let i = 0; i < topX; i++) {
+      arr.push(this.library.pop());
+    }
+    return arr;
+  }
+
+  public putBackOnTop(arr: Array<Card>): void {
+    _.each(arr, (c: Card) => {
+      this.library.push(c);
+    });
+  }
+
+  public putOnBottom(arr: Array<Card>): void {
+    _.each(arr, (c: Card) => {
+      this.library.unshift(c);
+    });
+  }
+
+  // public scry(n: number): void {
+  //   const toSee: Array<Card> = [];
+  //   const toBottom: Array<Card> = [];
+  //   for (let i = 0; i < n; i++) {
+  //     toSee.push(this.library.pop());
+  //   }
+  //   _.each(toSee, (card: Card) => {
+
+  //   });
+  // }
 
   public tutor(cardName: string): Card {
     return _.find(this.library, (cards) => {
@@ -47,6 +81,7 @@ export class Deck implements DeckInterface {
 
   public draw(): Card {
     const cardToReturn = this.library.pop();
+    cardToReturn.zone.name = 'hand';
     //
     // Additional logic here if necessary
     //

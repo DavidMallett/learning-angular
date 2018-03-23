@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Permanent, Creature, Artifact, Planeswalker, Enchantment, Land } from '../core/permanent.component';
-import { Source } from '../models/source';
-import { Modifier } from '../core/modifier.class';
 import { Spell, Instant, Sorcery } from '../core/spell.class';
 import { Card } from '../card';
-import { GameInstance } from '../core/game-instance.class';
-import { Battlefield } from '../core/battlefield.class';
 import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { ManaAbility } from '../kersplat/mana-ability.class';
@@ -64,14 +60,15 @@ export class InfoService {
   // and makes an array of color combinations the permanent can make (eg. ['W', 'U'])
   // and then adds that to an outer array where each inner array represents a mana source
   // in another class/service, the arrays can be analyzed to determine each combination of mana that can be created
+
+  // todo: remove the "convertToManaAbility" method
   public manaAvailable(pl: Player): Array<Array<string>> {
     const resultOuter = Array<Array<string>>();
     _.each(pl.controls, (perm: Permanent, index: number) => {
       if (perm.abilities.length > 0) {
         _.each(perm.abilities, (abil: ActivatedAbility, index2: number) => {
-          if (abil.manaAbil()) {
-            resultOuter.push(abil.convertToManaAbility()
-              .possibleManaOutput());
+          if (abil.isManaAbility) {
+            resultOuter.push(ManaAbility.constructFromObject(abil).possibleManaOutput());
           }
         });
       }

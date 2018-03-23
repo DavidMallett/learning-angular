@@ -5,10 +5,9 @@ export interface Modifier {
   duration?: string;
   host?: any; // reference to the thing being modified, if applicable
 
-  apply();
+  apply(): void;
 
-  expire();
-  // method apply();
+  expire(): void;
 
 
 }

@@ -23,6 +23,10 @@ export class Turn {
     return Turn.whoseTurnIsIt;
   }
 
+  public begin(): void {
+    // todo: determine if this method is necessary
+  }
+
   public end(): void {
     // todo: add additional logic
     this.activePlayer.passPriority();

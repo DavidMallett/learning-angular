@@ -1,0 +1,52 @@
+{
+  "Notes about this": [
+    "we calculate the virtual card advantage and increased chance to draw land provided by cantrips",
+    "CA is amount of virtual CA we get by casting the spell; draws is how many cards the spell gets;",
+    "Scries is how many cards you get to look at before deciding",
+    "and lands is the number of extra lands you will get on average",
+    "adjusted according to the spell",
+    "These are rough values only!"
+  ],
+  "Brainstorm": {
+    "cardAdvantage": 3,
+    "draws": 3,
+    "scries": 0,
+    "lands": 0.5
+  },
+  "Preordain": {
+    "cardAdvantage": 1.5,
+    "draws": 1,
+    "scries": 2,
+    "lands": 1
+  },
+  "Ponder": {
+    "cardAdvantage": 2,
+    "draws": 1,
+    "scries": 4,
+    "lands": 1.125
+  },
+  "Serum Visions": {
+    "cardAdvantage": 1,
+    "draws": 1,
+    "scries": 2,
+    "lands": 0.75
+  },
+  "Sleight of Hand": {
+    "cardAdvantage": 0.5,
+    "draws": 1,
+    "scries": 2,
+    "lands": 0.625
+  },
+  "Opt": {
+    "cardAdvantage": 0.375,
+    "draws": 1,
+    "scries": 1,
+    "lands": 0.375
+  },
+  "Gitaxian Probe": {
+    "cardAdvantage": 0,
+    "draws": 1,
+    "scries": 0,
+    "lands": 0.25
+  }
+}

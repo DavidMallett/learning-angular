@@ -20,6 +20,8 @@ import { Source } from './app/models/source';
 import { DeckBuilderService } from './app/services/deck-builder.service';
 import { Cost } from './app/kersplat/cost.class';
 import { AbilityResolver } from './app/kersplat/ability-resolver.class';
+import { Deck } from './app/deck.component';
+import { DeckBuilderComponent } from './app/views/deck-builder/deck-builder.component';
 
 if (environment.production) {
   enableProdMode();
@@ -27,3 +29,16 @@ if (environment.production) {
 
 platformBrowserDynamic().bootstrapModule(AppModule)
   .catch(err => console.log(err));
+
+const uuidv4 = require('uuid/v4');
+const lib: Array<Card> = [];
+const dbs = new DeckBuilderService();
+const esperShadow: Deck = dbs.readDeckFromJson('Esper Shadow', '../decks/espershadow.json');
+const grixisShadow: Deck = dbs.readDeckFromJson('Grixis Shadow', '../decks/grixisshadow.json');
+
+const player1: Player = new Player('David', esperShadow);
+const player2: Player = new Player('Computer', grixisShadow);
+
+const theGame: GameInstance = new GameInstance('modern', [player1, player2]);
+
+theGame.start();

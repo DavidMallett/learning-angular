@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { expect, should } from 'chai';
 import { DeckBuilderComponent } from './deck-builder.component';
 
 describe('DeckBuilderComponent', () => {
@@ -20,6 +20,7 @@ describe('DeckBuilderComponent', () => {
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    // tslint:disable-next-line:no-unused-expression
+    expect(component).to.be.true;
   });
 });

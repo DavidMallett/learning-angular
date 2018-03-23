@@ -10,7 +10,7 @@ export class DeathShadow extends Creature {
 
   public constructor (card: Card) {
     super(card);
-    GameInstance.bf().register(new StaticEffect(this.lifeTotal())));
+    GameInstance.bf().register(new StaticEffect(this.lifeTotal()));
   }
 
   public lifeTotal(): void {

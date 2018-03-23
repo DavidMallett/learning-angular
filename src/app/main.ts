@@ -1,13 +1,27 @@
 import { Hand } from './hand';
 import { Card } from './card';
+import { Player } from './player';
 import { Permanent, Creature, Land, Artifact, Enchantment } from './core/permanent.component';
 import { Deck } from './deck.component';
 import { Battlefield } from './core/battlefield.class';
 import { GameInstance } from './core/game-instance.class';
 import * as uuid from 'uuid';
+import { DeckBuilderService } from './services/deck-builder.service';
 
 const uuidv4 = require('uuid/v4');
-const deck1 = [];
+const lib: Array<Card> = [];
+const dbs = new DeckBuilderService();
+const esperShadow: Deck = dbs.readDeckFromJson('Esper Shadow', '../decks/espershadow.json');
+const grixisShadow: Deck = dbs.readDeckFromJson('Grixis Shadow', '../decks/grixisshadow.json');
+
+const player1: Player = new Player('David', esperShadow);
+const player2: Player = new Player('Computer', grixisShadow);
+
+const theGame: GameInstance = new GameInstance('modern', [player1, player2]);
+
+theGame.start();
+
+// NOTE: Ignore this file! Use ../main.ts (root/src/main.ts) instead of this one (root/src/app/main.ts)!
 
 
 /**

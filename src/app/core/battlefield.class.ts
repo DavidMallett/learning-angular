@@ -1,15 +1,15 @@
 import { Permanent, Creature, Land, Artifact, Enchantment, Planeswalker } from './permanent.component';
 import { TheStack } from './theStack';
-import { GameInstance } from './game-instance.class';
-import { Phase } from '../phase.class';
+// import { GameInstance } from './game-instance.class';
+// import { Phase } from '../phase.class';
 import { Logger } from '../util/logger.util';
 import { Player } from '../player';
 import { Zone } from '../models/zone.class';
-import { Match } from '../models/match';
+// import { Match } from '../models/match';
 import { Trigger } from '../kersplat/trigger.class';
 import { TriggerHelperService } from '../services/trigger-helper.service';
-import { Condition } from '../models/condition.interface';
-import { Source } from '../models/source';
+// import { Condition } from '../models/condition.interface';
+// import { Source } from '../models/source';
 import { StaticEffect } from '../kersplat/static-effect.class';
 import { CombatController } from './combat/combatController';
 import * as uuid from 'uuid';
@@ -28,7 +28,7 @@ export class Battlefield {
   public planeswalkers: Planeswalker[];
   public fieldEffects: Array<StaticEffect>;
   public gameId: string;
-  public phase: Phase;
+  // public phase: Phase;
   public logger: Logger;
   public players: Array<Player>;
   public activePlayer?: Player;
@@ -45,7 +45,7 @@ export class Battlefield {
     this.fieldEffects = [];
     this.players = [];
     this.gameId = instance;
-    this.phase = new Phase('firstMainPhase');
+    // this.phase = new Phase('firstMainPhase');
     this.cc = null;
   }
 
@@ -75,13 +75,14 @@ export class Battlefield {
     perm.zone.name = zone.name;
   }
 
-  public toNextPhase(): void {
-    if (this.validateEmptyStack()) {
-      this.phase.advancePhase();
-    } else {
-      throw new Error('cannot advance to next phase because there are actions on the stack');
-    }
-  }
+  // this should be in gameInstance class
+  // public toNextPhase(): void {
+  //   if (this.validateEmptyStack()) {
+  //     this.phase.advancePhase();
+  //   } else {
+  //     throw new Error('cannot advance to next phase because there are actions on the stack');
+  //   }
+  // }
 
   public applyStateBasedActions(): void {
 
@@ -158,11 +159,11 @@ export class Battlefield {
     return this.creatures;
   }
 
-  public validateSorcerySpeed(perm: Permanent): boolean {
-    return (perm.keywords.indexOf('flash') < 0 &&
-      (this.phase.name() === 'firstMainPhase' ||
-      this.phase.name() === 'postCombatMainPhase'));
-  }
+  // public validateSorcerySpeed(perm: Permanent): boolean {
+  //   return (perm.keywords.indexOf('flash') < 0 &&
+  //     (this.phase.name() === 'firstMainPhase' ||
+  //     this.phase.name() === 'postCombatMainPhase'));
+  // }
 
   public etb(perm: Permanent): void {
     if (perm.hasEtbEffect) {

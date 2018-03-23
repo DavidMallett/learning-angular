@@ -3,19 +3,24 @@
  * Else, use UUID (or array of UUIDs for spells with multiple targets);
  * These are optional because targetType can be "self" or "all permanents" etc
  */
-import { Battlefield } from '../core/battlefield.class';
-import { GameInstance } from '../core/game-instance.class';
 
 export class Target {
   targetType: string;
   targetId?: string;
   targetIds?: Array<string>;
-  reference?: any;
+  reference?: any; // reference to thing being targetted
+  source?: any; // reference to thing doing the targetting
+  sourceType?: string;
 
-  public constructor(type: string, ref?: any) {
-    this.targetType = type;
-    this.reference = ref;
+  public constructor(type?: string, ref?: any, source?: any) {
+    this.targetType = type || 'self';
+    this.source = source || 'stateBasedActions';
+    this.reference = ref || this.source;
     this.targetId = this.reference.id;
+  }
+
+  public static target(obj: any): Target {
+    return new Target(obj.type, obj);
   }
 
   public changeTarget(ref?: any, id?: string): void {

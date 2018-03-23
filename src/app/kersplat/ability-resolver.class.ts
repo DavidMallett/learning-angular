@@ -1,10 +1,10 @@
-import { Battlefield } from '../core/battlefield.class';
-import { GameInstance } from '../core/game-instance.class';
+// import { Battlefield } from '../core/battlefield.class';
+// import { GameInstance } from '../core/game-instance.class';
 import { ActivatedAbility } from './activated-ability.class';
-import { Target } from '../models/target.interface';
+// import { Target } from '../models/target.interface';
 
 const _ = require('lodash');
-const theBattlefield = GameInstance.bf();
+// const theBattlefield = GameInstance.bf();
 
 export class AbilityResolver {
 

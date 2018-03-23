@@ -1,24 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { TestComponentComponent } from './generated/test-component/test-component.component';
 import { TestPipePipe } from './generated/test-pipe.pipe';
 import { CardInfoService } from './services/card-info.service';
 import { DeckBuilderService } from './services/deck-builder.service';
 import { KeywordHelperService } from './services/keyword-helper.service';
-import { TriggerHelperService } from './services/trigger-helper.service';
 import { TargetPipe } from './pipes/target-pipe';
 import { Logger } from './util/logger.util';
 import { DeckBuilderComponent } from './views/deck-builder/deck-builder.component';
+import { TriggerHelperService } from './services/trigger-helper.service';
+import { InfoService } from './services/info-service';
+import { DecisionHelperService } from './services/decision-helper.service';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    TestComponentComponent,
     TestPipePipe,
     TargetPipe,
     DeckBuilderComponent
@@ -30,10 +30,12 @@ import { DeckBuilderComponent } from './views/deck-builder/deck-builder.componen
   ],
   providers: [
     CardInfoService,
-    TriggerHelperService,
     DeckBuilderService,
     KeywordHelperService,
-    Logger
+    Logger,
+    TriggerHelperService,
+    InfoService,
+    DecisionHelperService
   ],
   bootstrap: [AppComponent]
 })

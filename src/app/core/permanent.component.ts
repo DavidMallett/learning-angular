@@ -1,12 +1,10 @@
 import { Card } from '../card';
-import { CardInterface } from '../models/card.interface';
 import { Player } from '../player';
 import { ActivatedAbility } from '../kersplat/activated-ability.class';
 import { Logger } from '../util/logger.util';
 import { Modifier } from './modifier.class';
 import { Trigger } from '../kersplat/trigger.class';
-import { GameInstance } from './game-instance.class';
-import { Battlefield } from './battlefield.class';
+// import { GameInstance } from './game-instance.class';
 import { TriggerHelperService } from '../services/trigger-helper.service';
 import { CardInfoService } from '../services/card-info.service';
 import { InfoService } from '../services/info-service';
@@ -16,9 +14,9 @@ import * as uuid from 'uuid';
 
 const _ = require('lodash');
 const uuidv4 = require('uuid/v4');
-const ths = new TriggerHelperService();
-const ifs = new InfoService();
-const cis = new CardInfoService();
+const ths: TriggerHelperService = new TriggerHelperService();
+const ifs: InfoService = new InfoService();
+const cis: CardInfoService = new CardInfoService();
 
 export class Permanent {
   // required
@@ -97,16 +95,17 @@ export class Permanent {
     }
   }
 
+  // todo: re-implement, probably in ActivatedAbility class
   public activate(abil: ActivatedAbility): void {
     // todo: validate that the permanent has the ability they're activating
     // player still has to pay the cost
-    this.controller.payCost(abil.cost, abil.source);
+    // this.controller.payCost(abil.cost, abil.source.permanent());
   }
 
   public die(): void {
   // to 'die' is to be put into the graveyard from the battlefield
-    if (this.zone === 'battlefield') {
-      this.zone = 'graveyard';
+    if (this.zone.name === 'battlefield') {
+      this.zone.name = 'graveyard';
       ths.checkCondition(this, 'died');
       this.owner.yard.push(this.card());
 
@@ -116,9 +115,10 @@ export class Permanent {
   }
 
   public exile(): void {
-    this.zone = 'exile';
-    GameInstance.bf().remove(this);
-    GameInstance.game().exile(this);
+    this.zone.name = 'exile';
+    // todo: put this method in another class (Player maybe?)
+    // GameInstance.bf().remove(this);
+    // GameInstance.game().exile(this);
     ths.checkCondition(this, 'leftBattlefield');
   }
 
@@ -197,6 +197,10 @@ export class Creature extends Permanent {
       'subtype': details.subtype
     };
     return new Creature(theToken);
+  }
+
+  public takeDamage(dmg: number): void {
+    this.damage += dmg;
   }
 
   public threatLevel(): number {
@@ -300,5 +304,9 @@ export class Planeswalker extends Permanent {
       'subtype': perm.subtype
     };
     return new Planeswalker(thePwCard);
+  }
+
+  public takeDamage(dmg: number): void {
+    this.loyalty -= dmg;
   }
 }

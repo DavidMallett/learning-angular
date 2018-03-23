@@ -2,11 +2,11 @@ import { Hand } from './hand';
 import { Card } from './card';
 import { Permanent, Creature, Land, Artifact, Enchantment, Planeswalker } from './core/permanent.component';
 import { Deck } from './deck.component';
-import { Battlefield } from './core/battlefield.class';
+// import { Battlefield } from './core/battlefield.class';
 import { Graveyard } from './core/graveyard.component';
 import { Logger } from './util/logger.util';
 import { Priority } from './core/priority.class';
-import { GameInstance } from './core/game-instance.class';
+// import { GameInstance } from './core/game-instance.class';
 import { Match } from './models/match';
 import { TheStack } from './core/theStack';
 import { Turn } from './turn.class';
@@ -36,7 +36,7 @@ export class Player {
   public controls: Permanent[];
   public owns: Permanent[];
   public controlsLegends: Permanent[];
-  public bf: Battlefield;
+  // public bf: Battlefield;
   public hasPlayedLandThisTurn: boolean;
   public hasPriority: boolean;
   public priority: Priority;
@@ -46,7 +46,7 @@ export class Player {
   public manaPool: Array<string>;
   public yard: Graveyard;
   public gameScore?: number;
-  public game?: GameInstance; // or Game
+  // public game?: GameInstance; // or Game
   public inMatch?: Match;
   public knownInfo: KnownInformation;
 
@@ -54,7 +54,7 @@ export class Player {
     this.startingLife = 20;
     this.currentLife = this.startingLife;
     this.uuid = uuidv4();
-    this.bf = GameInstance.bf(); // not sure if this is actually needed
+    // this.bf = GameInstance.bf(); // not sure if this is actually needed
     this.hand = new Hand();
     this.deck = deck;
     this.controls = [];
@@ -68,8 +68,8 @@ export class Player {
     this.hasPriority = false;
     this.priority = new Priority(this, this.opponent);
     this.knownInfo = new KnownInformation();
-    this.game = GameInstance.game();
-    this.inMatch = this.game.match;
+    // this.game = GameInstance.game();
+    // this.inMatch = this.game.match;
   }
 
   // public static activePlayer
@@ -92,6 +92,29 @@ export class Player {
     this.hand.add(newCard);
   }
 
+  public scry(num: number): void {
+    const theScry: Array<Card> = this.deck.lookAt(num);
+    const toBottom: Array<Card> = this.choose(theScry);
+    this.deck.putBackOnTop(theScry);
+    this.deck.putOnBottom(toBottom);
+  }
+
+  public choose(choices: Array<Card>): Array<Card> {
+    // transforms the input array and returns array of not-chosen objects
+    // todo: figure a way to implement the keyword 'choose... '
+    // NB: 'Choose' DOES NOT TARGET
+
+    // implementation: don't pick any (bad)
+    // return new Array<Card>();
+
+    // implementation: pick randomly (still pretty bad)
+    const arr: Array<Card> = [];
+    _.each(choices, (c: Card) => {
+      Math.floor(Math.random() * 10) > 5 ? arr.push(choices.pop()) : this.chill();
+    });
+    return arr;
+  }
+
   // todo: account for 'reveal' occasionally being used as a cost
   public reveal(card: Card): void {
     ifs.seeOpponentCard(card.name);
@@ -109,7 +132,11 @@ export class Player {
 
   public discard(card: Card): void {
     // todo: validate that the card is in hand
-    this.hand.discard(card);
+    // this.hand.discard(card);
+    _.remove(this.hand.cardsInHand, (theCard: Card) => {
+      return theCard.name === card.name;
+    });
+    this.yard.push(card);
   }
 
   public getCreatures(): Array<Creature> {
@@ -125,12 +152,20 @@ export class Player {
 
   public payCost(cost: Cost, tapper?: Permanent): void {
     cost.tap ? this.payTapCost(tapper) : this.chill();
-    //
+    cost.lifeCost ? this.payLifeCost(cost.lifeCost) : this.chill();
 
   }
 
   public payTapCost(perm: Permanent): void {
     perm.tap();
+  }
+
+  public payLifeCost(lifeCost: number): void {
+    if (this.currentLife <= lifeCost) {
+      throw new Error('cannot pay more life than you have');
+    } else {
+      this.currentLife -= lifeCost;
+    }
   }
 
   public life(): number {
@@ -147,9 +182,9 @@ export class Player {
     });
   }
 
-  public passTurn(): void {
-    this.game.passTurn(this, this.opponent);
-  }
+  // public passTurn(): void {
+  //   this.game.passTurn(this, this.opponent);
+  // }
 
   public tapForMana(land: Land, symbol: string): void {
     if (land.tapped) {
@@ -166,6 +201,16 @@ export class Player {
     // })
   }
 
+  public tax(cost: ManaCost, penalty: () => void): void {
+    // used for stuff like Force Spike, Mana Leak, etc
+    try {
+      this.payMana(cost);
+    } catch (e) {
+      Logger.gLog('Player ' + this.name + ' could not pay the tax');
+      penalty();
+    }
+  }
+
   public lose(): void {
     // todo: add logic for losing the game
   }
@@ -174,6 +219,10 @@ export class Player {
     // todo: add logic for winning the game
     this.gameScore++;
 
+  }
+
+  public takeDamage(dmg: number): void {
+    this.currentLife -= dmg;
   }
 
   public landForTurn(card: Card): void {
@@ -239,20 +288,20 @@ export class Player {
     } else {
       // check for timing restrictions based on type
       if (card.type !== 'instant' &&
-        _.indexOf(card.keywords, 'flash') < 0 &&
-        (this.game.phase.name() !== 'firstMainPhase' ||
-          this.game.phase.name() !== 'postCombatMainPhase')
+        _.indexOf(card.keywords, 'flash') < 0 // &&
+        // (this.game.phase.name() !== 'firstMainPhase' ||
+        //   this.game.phase.name() !== 'postCombatMainPhase')
       ) {
         throw new Error('Cannot case sorcery-speed spells outside of the main phase');
       } else {
         // possibly more checks - add one for modifiers?
         // pay the cost and put the spell on the stack
-        const theCost: Cost = {
-          'manaCost': parser.parseTokenArray(parser.convertCostStringToTokenArray(card.manaCost)),
+        const theCost: Cost = Cost.newCost({
+          'manaCost': ManaCost.parseTokenArray(parser.convertCostStringToTokenArray(card.manaCost)),
           'tap': false,
           'additionalCosts': card.additionalCosts || [],
           'paid': false
-        };
+        });
         ManaCost.subtract(this.manaPool, theCost.manaCost);
       }
 
@@ -273,6 +322,16 @@ export class Player {
 
   // }
 
+  // this method is used for effects that say "choose a card from a graveyard..."
+  public chooseCardFromGraveyard(yard: Graveyard, cardName: string): Card {
+    // input should be a reference to the card you are choosing
+    const theCard: Card = _.pull(yard.cards, (card: Card, index: number) => {
+      return card.name === cardName;
+    });
+    // todo: prompt the user to select a card
+    return theCard;
+  }
+
   public castSpell(card: Card): void {
     // validate card is in hand
     if (!(this.hand.inHand(card.name))) {
@@ -280,10 +339,10 @@ export class Player {
     } else {
       switch (card.type) {
         case 'creature':
-          this.castCreature(card);
+          // this.castCreature(card);
           break;
         case 'artifact':
-          this.castArtifact(card);
+          // this.castArtifact(card);
           break;
         case 'instant':
           this.castInstant(card);
@@ -303,37 +362,37 @@ export class Player {
     }
   }
 
-  public castCreature(card: Card): void {
-    // validate timing restrictions
-    if (this.bf.phase.name() !== 'firstMainPhase' &&
-      this.bf.phase.name() !== 'postCombatMainPhase' &&
-        card.keywords.indexOf('flash') < 0) {
-          throw new Error('cannot cast creature spells without flash during this phase');
-    } else {
-      // register a new permanent with the battlefield and player
-      const creature: Creature = new Creature(card);
-      this.owns.push(creature);
-      this.controls.push(creature);
-      this.bf.register(creature);
-      if (creature.supertype !== null && creature.supertype === 'legendary') {
-        this.controlsLegends.push(creature);
-      }
-    }
-  }
+  // public castCreature(card: Card): void {
+  //   // validate timing restrictions
+  //   if (this.bf.phase.name() !== 'firstMainPhase' &&
+  //     this.bf.phase.name() !== 'postCombatMainPhase' &&
+  //       card.keywords.indexOf('flash') < 0) {
+  //         throw new Error('cannot cast creature spells without flash during this phase');
+  //   } else {
+  //     // register a new permanent with the battlefield and player
+  //     const creature: Creature = new Creature(card);
+  //     this.owns.push(creature);
+  //     this.controls.push(creature);
+  //     this.bf.register(creature);
+  //     if (creature.supertype !== null && creature.supertype === 'legendary') {
+  //       this.controlsLegends.push(creature);
+  //     }
+  //   }
+  // }
 
-  public castArtifact(card: Card): void {
-    if (this.bf.phase.name() !== 'firstMainPhase' &&
-      this.bf.phase.name() !== 'postCombatMainPhase' &&
-      card.keywords.indexOf('flash') < 0) {
-        const artifact: Artifact = new Artifact(card);
-        this.owns.push(artifact);
-        this.controls.push(artifact);
-        this.bf.register(artifact);
-        if (artifact.supertype !== null && artifact.supertype === 'legendary') {
-          this.controlsLegends.push(artifact);
-        }
-      }
-  }
+  // public castArtifact(card: Card): void {
+  //   if (this.bf.phase.name() !== 'firstMainPhase' &&
+  //     this.bf.phase.name() !== 'postCombatMainPhase' &&
+  //     card.keywords.indexOf('flash') < 0) {
+  //       const artifact: Artifact = new Artifact(card);
+  //       this.owns.push(artifact);
+  //       this.controls.push(artifact);
+  //       this.bf.register(artifact);
+  //       if (artifact.supertype !== null && artifact.supertype === 'legendary') {
+  //         this.controlsLegends.push(artifact);
+  //       }
+  //     }
+  // }
 
   public castInstant(card: Card): void {}
 

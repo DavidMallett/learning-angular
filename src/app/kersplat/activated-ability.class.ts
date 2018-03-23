@@ -5,7 +5,7 @@ import { GameInstance } from '../core/game-instance.class';
 import { Target } from '../models/target.interface';
 import { Logger } from '../util/logger.util';
 import { Source } from '../models/source';
-import { ManaAbility } from './mana-ability.class';
+// import { ManaAbility } from './mana-ability.class';
 
 export class ActivatedAbility {
   public id: string;
@@ -27,29 +27,31 @@ export class ActivatedAbility {
   }
 
   public manaAbil(): boolean {
-    return (this instanceof ManaAbility);
+    return this.isManaAbility;
   }
 
   public activate(costPaid: Cost): void {
-    
+    // todo: override this for instances of this class
   }
 
-  public convertToManaAbility(): ManaAbility {
-    const manaAbil: any = {
-      'id': this.id,
-      'cost': this.cost,
-      'type': this.type,
-      'target': this.target,
-      'source': this.source,
-      'effect': this.effect,
-      'colors': this.effect[0].split(''),
-      'color': this.effect[0],
-      'amount': this.effect[1],
-      'isManaAbility': true
-    };
 
-    return ManaAbility.constructFromObject(manaAbil);
-  }
+  // Do not put this in this class!
+  // public convertToManaAbility(): ManaAbility {
+  //   const manaAbil: any = {
+  //     'id': this.id,
+  //     'cost': this.cost,
+  //     'type': this.type,
+  //     'target': this.target,
+  //     'source': this.source,
+  //     'effect': this.effect,
+  //     'colors': this.effect[0].split(''),
+  //     'color': this.effect[0],
+  //     'amount': this.effect[1],
+  //     'isManaAbility': true
+  //   };
+
+  //   return ManaAbility.constructFromObject(manaAbil);
+  // }
 
   // public constructor(cost: Cost, target?: Target, effect?: Function) {
   //   this.cost = cost;

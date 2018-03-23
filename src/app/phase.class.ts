@@ -1,4 +1,4 @@
-import { Turn } from './turn.class';
+// import { Turn } from './turn.class';
 const thePhases = require('./phases.json');
 // untap, upkeep, drawStep, firstMainPhase, beginningOfCombat, declareAttackers
 // declareBlockers, damageStep, postDamageCombatStep, postCombatMainPhase, endStep,
@@ -7,12 +7,12 @@ export class Phase {
 
   public phases: string[];
   public currentPhase: string;
-  public currentTurn: Turn;
+  // public currentTurn: Turn;
 
   public constructor(thePhase: string) {
     this.phases = thePhases.phases;
     this.currentPhase = thePhase;
-    this.currentTurn.currentPhase = new Phase(thePhase);
+    // this.currentTurn.currentPhase = new Phase(thePhase);
   }
 
   public name(): string {
@@ -55,10 +55,11 @@ export class Phase {
         this.currentPhase = 'cleanup';
         break;
       case 'cleanup':
-        this.currentTurn.end();
+        // this.currentTurn.end();
         this.currentPhase = 'untap';
-        const t: Turn = new Turn(this.currentTurn.nonActivePlayer, Turn.whoseTurn());
-        this.currentTurn = t;
+        // the rest of the logic should be in the gameInstance class
+        // const t: Turn = new Turn(this.currentTurn.nonActivePlayer, Turn.whoseTurn());
+        // this.currentTurn = t;
         break;
       default:
         console.log('that is not a step or phase in Magic the Gathering');

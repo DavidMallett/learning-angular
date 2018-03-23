@@ -1,8 +1,9 @@
-import { OracleText } from './oracleText.js';
 import { Player } from './player';
 import { CardInterface } from './models/card.interface';
 import { CardInfoService } from './services/card-info.service';
 import { Zone } from './models/zone.class';
+import { Graveyard } from './core/graveyard.component';
+// import { Modifier } from './core/modifier.class';
 import * as uuid from 'uuid';
 const uuidv4 = require('uuid/v4');
 const mtg = require('mtgsdk');
@@ -52,14 +53,29 @@ export class Card implements CardInterface {
   public keywords?: Array<string>;
   public additionalCosts?: Array<string>;
   public zone?: Zone; //
+  // public modifiers?: Array<Modifier>;
 
   public constructor(name: string) {
     this.name = name;
     this.keywords = [];
+    // this.modifiers = [];
     const theCard: Card = cis.findCardByName(name);
     this.uuid = uuidv4();
     _.create(this, theCard);
   }
+
+
+  //  These vvv should be methods of this class's children, i.e. CreatureCard, InstantCard, etc
+  // public modify(): void {
+  //   _.each(this.modifiers, (mod: Modifier, index: number) => {
+  //     mod.applyToCard(this);
+  //   });
+  // }
+
+  // public discard(): void {
+  //   this.owner.yard.push(this);
+  //   this.zone.name = 'graveyard';
+  // }
 
   public toString(): string {
     let resultStr = '';

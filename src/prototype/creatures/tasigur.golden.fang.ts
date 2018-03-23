@@ -25,7 +25,14 @@ export class TasigurTheGoldenFang extends Creature {
     // how to prompt the other player to pick a card?
     // add a 'choose' method to the player Class and an optional 'opponent' reference to their opponent
 
-    
+    const cardName = prompt('enter a card name to choose');
+    return this.controller.opponent.chooseCardFromGraveyard(this.controller.yard, cardName);
+
+    // const theCard: Card = this.controller.opponent.chooseCardFromGraveyard(this.controller.yard,
+    //   _.find(this.controller.yard, (card: Card, index: number) => {
+    //     return card.name === prompt('enter the name of a card in the graveyard to give back to your opponent');
+    // }));
+
   }
 
 }

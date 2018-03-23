@@ -1,6 +1,6 @@
 import { Trigger } from '../kersplat/trigger.class';
-import { Battlefield } from '../core/battlefield.class';
-import { GameInstance } from '../core/game-instance.class';
+// import { Battlefield } from '../core/battlefield.class';
+// import { GameInstance } from '../core/game-instance.class';
 import { TheStack } from '../core/theStack';
 import { Injectable } from '@angular/core';
 import { Condition } from '../models/condition.interface';
@@ -39,13 +39,15 @@ export class TriggerHelperService {
     });
   }
 
-  public checkCondition(obj: any, event: string): void {
+  public checkCondition(obj: any, event: string, source?: any): void {
     // see if an event occurring to an object causes an ability to trigger
     _.each(this.onStateChangeTriggers, (trigger: Trigger, index: number) => {
-      if (trigger.checkEvent(event)) {
+      if (trigger.checkEvent(event, source)) {
         TriggerHelperService.execute(trigger);
       }
     });
+    // source matters for stuff like Baral:
+    // 'Whenever a spell or ability you control counters a spell an opponent controls...'
   }
 
   public registerTrigger(on: string, t: Trigger): void {
@@ -70,7 +72,7 @@ export class TriggerHelperService {
         this.onStateChangeTriggers.push(t);
         break;
       default:
-        throw new Error('unrecognized target for trigger');
+        throw new Error('unrecognized condition for trigger');
     }
   }
 

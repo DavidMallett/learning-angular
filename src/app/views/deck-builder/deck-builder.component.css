@@ -1,0 +1,13 @@
+#list {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  width: 500px;
+  height: 600px;
+  text-align: left;
+  vertical-align: text-top;
+}
+
+p {
+  font-family: verdana;
+  font-size: 14px;
+}

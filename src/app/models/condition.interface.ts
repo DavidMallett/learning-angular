@@ -1,5 +1,5 @@
-import { TriggerHelperService } from '../services/trigger-helper.service';
-import { Trigger } from '../kersplat/trigger.class';
+// import { TriggerHelperService } from '../services/trigger-helper.service';
+// import { Trigger } from '../kersplat/trigger.class';
 
 export class Condition {
   public objToWatch: any;

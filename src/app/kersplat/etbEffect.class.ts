@@ -1,11 +1,11 @@
 import { Card } from '../card';
 import { Trigger } from './trigger.class';
-import { GameInstance } from '../core/game-instance.class';
+// import { GameInstance } from '../core/game-instance.class';
 import { Target } from '../models/target.interface';
 import { Source } from '../models/source';
 
 export class EtbEffect extends Trigger {
-  public gameInstance: GameInstance;
+  // public gameInstance: GameInstance;
   public actions: Array<string>;
   public source: any; // reference to source of trigger
   public target: Target; // UUID of player or in-game object; e.g. 'eachOpponent', '{object: qrvx7}', 'anyNumberofCreatures'

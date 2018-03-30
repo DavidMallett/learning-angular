@@ -33,12 +33,14 @@ platformBrowserDynamic().bootstrapModule(AppModule)
 const uuidv4 = require('uuid/v4');
 const lib: Array<Card> = [];
 const dbs = new DeckBuilderService();
-const esperShadow: Deck = dbs.readDeckFromJson('Esper Shadow', '../decks/espershadow.json');
-const grixisShadow: Deck = dbs.readDeckFromJson('Grixis Shadow', '../decks/grixisshadow.json');
 
-const player1: Player = new Player('David', esperShadow);
-const player2: Player = new Player('Computer', grixisShadow);
+// todo: find a way to do this without dbs.readDeckFromJson
+// const esperShadow: Deck = dbs.readDeckFromJson('Esper Shadow', '../decks/espershadow.json');
+// const grixisShadow: Deck = dbs.readDeckFromJson('Grixis Shadow', '../decks/grixisshadow.json');
 
-const theGame: GameInstance = new GameInstance('modern', [player1, player2]);
+// const player1: Player = new Player('David', esperShadow);
+// const player2: Player = new Player('Computer', grixisShadow);
 
-theGame.start();
+// const theGame: GameInstance = new GameInstance('modern', [player1, player2]);
+
+// theGame.start();

@@ -50,5 +50,14 @@ export class DeckStats {
     this.numCantrips = cantrips;
   }
 
+  public sampleHand(): void {
+    this.deck.shuffle();
+    const hand: Array<Card> = new Array<Card>();
+    for (let i = 0; i < 7; i++) {
+      hand.push(this.deck.draw());
+    }
+    console.log(hand.toString());
+  }
+
 
 }

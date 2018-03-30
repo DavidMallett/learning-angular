@@ -34,17 +34,22 @@ export class DeckBuilderComponent implements OnInit {
     // const deck = dbs.readDeckFromJson('Esper Shadow', path);
   }
 
-  submit(list: string): Deck {
-    this.currentDeckList = this.dbs.readDeckFromBrowser(this.name, list);
+  submit($event): Deck {
+    console.log('clicked submit button');
+    console.log('value of input:\n' + $event.target.value);
+    this.currentDeckList = this.dbs.readDeckFromBrowser(this.name, $event.target.value);
     // const path: string = this.dbs.writeDeckToFile(uuid(), list);
     // this.currentDeckList = this.dbs.readDeckFromTxt(this.name, path);
     this.stats = new DeckStats(this.currentDeckList);
+    this.stats.sampleHand();
     return this.currentDeckList;
   }
 
-  setDeckName(value: string): void {
-    this.name = value;
-    this.currentDeckList.name = value;
+  setDeckName($event): void {
+    // $event.target ? console.log('event has a target') : console.log('event does not have a target');
+    this.name = $event.target.value;
+    this.currentDeckList.name = $event.target.value;
+    console.log('new deck name: ' + this.name);
   }
 
 }

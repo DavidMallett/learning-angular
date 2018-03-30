@@ -4,12 +4,12 @@
     <div class="form-group">
       <div class="label">
         <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" blur="setDeckName(name.value)" required>
+        <input type="text" class="form-control" id="deckName" [value]="name" (blur)="setDeckName($event)" required>
       </div>
       <div class="deckList">
         <label for="list">Decklist</label>
         <textarea class="form-control" id="list" required></textarea>
-        <button class="form-submit" id="deckSubmissionButton" click="submit(list.value)">Submit Deck</button>
+        <button class="form-submit" id="deck-submission-button" (click)="submit($)">Submit Deck</button>
         <p>Name of deck: {{this.name}}</p>
       </div>
     </div>

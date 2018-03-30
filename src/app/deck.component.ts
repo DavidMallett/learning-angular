@@ -83,6 +83,7 @@ export class Deck implements DeckInterface {
     const cardToReturn = this.library.pop();
     cardToReturn.zone.name = 'hand';
     //
+    console.log('drew ' + cardToReturn.name);
     // Additional logic here if necessary
     //
     return cardToReturn;
